@@ -1,0 +1,71 @@
+version: '3.3'
+services:
+  web:
+    build:
+      context: ./webapp
+      dockerfile: Dockerfile
+    ports:
+     - "8080:5000"
+    volumes:
+      - "./webapp/tbapi:/usr/src/app"
+    links:
+      - mpower-db
+      - tbapp-db
+    container_name: tb-api
+    stdin_open: true
+    tty: true
+    depends_on:
+      - mpower-db
+      - tbapp-db
+    environment:
+      WAIT_HOSTS: mpower-db:3306, tbapp-db:3306
+      WAIT_BEFORE_HOSTS: 10
+      #FLASK_APP: "tbapi.factory:create_app()"
+      FLASK_APP: "tbapi_app.py"
+      FLASK_DEBUG: 1
+      MODE: 'dev'
+    networks:
+      - tbapi
+  mpower-db:
+    restart: always
+    image: mysql:5.7
+    hostname: mpower-db
+    volumes:
+      - "./db/sql:/docker-entrypoint-initdb.d"
+      - type: volume
+        source: mpower-db
+        target: /var/lib/mysql
+    ports:
+      - "3306:3306"
+    container_name: mpower-db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: mpower_demo
+      MYSQL_USER: mpower
+      MYSQL_PASSWORD: mpower
+    networks:
+      - tbapi
+  tbapp-db:
+    restart: always
+    image: mysql:5.7
+    hostname: app-db
+    volumes:
+      - type: volume
+        source: tbapp-db
+        target: /var/lib/mysql
+    #ports:
+      #- "3306:3306"
+    container_name: tbapp-db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: tbapi
+      MYSQL_USER: tbapi
+      MYSQL_PASSWORD: tbapi
+    networks:
+      - tbapi
+volumes:
+  tbapi-app:
+  mpower-db:
+  tbapp-db:
+networks:
+  tbapi:
