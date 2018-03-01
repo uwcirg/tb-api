@@ -3,6 +3,7 @@ from authlib.flask.client import OAuth
 from flask import g, session
 from flask import url_for, redirect, request
 from .models.mpower import User
+from werkzeug.local import LocalProxy
 
 def login(user, permanent=True):
     session['sid'] = user.id
@@ -33,7 +34,7 @@ def get_current_user():
     return user
 
 
-current_user = get_current_user
+current_user = LocalProxy(get_current_user)
 
 
 # def fetch_token(name):

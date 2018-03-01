@@ -16,7 +16,7 @@ class ConfirmForm(BaseForm):
 
 class LoginConfirmForm(ConfirmForm):
     email = EmailField(validators=[DataRequired()])
-    password = PasswordField(validators=[DataRequired()])
+    pw = PasswordField(validators=[DataRequired()])
 
     def validate_password(self, field):
         email = self.email.data.lower()

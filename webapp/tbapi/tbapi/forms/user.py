@@ -29,9 +29,8 @@ class AuthenticateForm(BaseForm):
 
 
 class UserCreationForm(BaseForm):
-    name = StringField(validators=[DataRequired()])
     email = EmailField(validators=[DataRequired()])
-    password = PasswordField(validators=[DataRequired()])
+    pw = PasswordField(validators=[DataRequired()])
 
     def validate_email(self, field):
         email = field.data.lower()
@@ -40,11 +39,16 @@ class UserCreationForm(BaseForm):
             raise StopValidation('Email has been registered.')
 
     def signup(self):
-        name = self.name.data
         email = self.email.data.lower()
-        user = User(name=name, email=email)
-        user.password = self.password.data
-        with db.auto_commit():
+        user = User(email=email)
+        user.pw = self.pw.data
+    
+        try:
             db.session.add(user)
+            db.session.commit()
+        except:
+            db.session.rollback()
+            raise
+
         login(user, True)
         return user

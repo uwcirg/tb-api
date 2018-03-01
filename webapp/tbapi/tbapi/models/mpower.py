@@ -3,6 +3,7 @@ from sqlalchemy import (
     Integer, String, Text
 )
 import json
+from werkzeug.security import generate_password_hash, check_password_hash
 
 from .base import db, SerializeMixin
 
@@ -29,17 +30,17 @@ class User(SerializeMixin, db.Model):
         return self.id
 
     @property
-    def password(self):
+    def pw(self):
         return self._password
 
-    @password.setter
-    def password(self, raw):
-        self._password = generate_password_hash(raw)
+    @pw.setter
+    def pw(self, raw):
+        self.password = generate_password_hash(raw)
 
     def check_password(self, raw):
-        if not self._password:
+        if not self.password:
             return False
-        return check_password_hash(self._password, raw)
+        return check_password_hash(self.password, raw)
 
     @classmethod
     def get_or_create(cls, profile):
@@ -47,7 +48,7 @@ class User(SerializeMixin, db.Model):
         if user:
             return user
         user = cls(email=profile.email, name=profile.name)
-        user._password = '!'
+        user.password = '!'
         with db.auto_commit():
             db.session.add(user)
         return user

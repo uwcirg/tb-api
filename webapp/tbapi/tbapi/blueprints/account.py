@@ -1,4 +1,4 @@
-from flask import Blueprint
+from flask import Blueprint, jsonify
 from flask import url_for, redirect, render_template
 from ..auth import current_user, logout as _logout
 from ..forms.user import AuthenticateForm, UserCreationForm
@@ -20,7 +20,7 @@ def login():
 @bp.route('/logout')
 def logout():
     _logout()
-    return redirect(url_for('static.hello'))
+    return redirect(url_for('account.login'))
 
 
 @bp.route('/signup', methods=['GET', 'POST'])
@@ -32,3 +32,7 @@ def signup():
         form.signup()
         return redirect(url_for('static.hello'))
     return render_template('account/signup.html', form=form)
+
+@bp.route('/myaccount', methods=['GET'])
+def myaccount():
+    return jsonify(current_user.serialize)
