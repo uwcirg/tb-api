@@ -5,13 +5,14 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     install_requires=[
-        'flask',
+        'Flask==0.12.2',
+        'Flask-SQLAlchemy==2.3.2',
+        'Flask-WTF==0.14.2',
+        'gevent',
         'PyMySQL',
-        'flask-sqlalchemy',
         'Flask-Migrate',
         'flask-cors',
-        'Flask-OAuthlib', 
-        'flask-bcrypt'
+        'Authlib[crypto]==0.5.1'
     ],
     setup_requires=[
         'pytest-runner',

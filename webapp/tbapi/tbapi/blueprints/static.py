@@ -1,14 +1,14 @@
 from flask import Blueprint, make_response, jsonify, flash, redirect, url_for, request, current_app
 
-static = Blueprint('static', __name__)
+bp = Blueprint('static', __name__)
 
-@static.route('/')
+@bp.route('/')
 def index():
     return "Hello, World!"
 
-@static.route('/index')
+@bp.route('/index')
 
-@static.route('/hello')
+@bp.route('/hello')
 def hello():
     return 'Welcome to TB API!'
 

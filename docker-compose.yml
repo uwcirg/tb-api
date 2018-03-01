@@ -23,6 +23,7 @@ services:
       #FLASK_APP: "tbapi.factory:create_app()"
       FLASK_APP: "tbapi_app.py"
       FLASK_DEBUG: 1
+      AUTHLIB_INSECURE_TRANSPORT: 'true'
       MODE: 'dev'
     networks:
       - tbapi

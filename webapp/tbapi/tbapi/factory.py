@@ -1,9 +1,8 @@
 import os
 from flask import Flask, g
 from flask_cors import CORS
-from flask_oauthlib.contrib.oauth2 import bind_sqlalchemy
-from .oauth2 import oauth2
-from .server import current_user, User, Client, Grant, Token
+from .models import db
+
 
 
 def create_app(config=None):
@@ -21,43 +20,20 @@ def create_app(config=None):
 
     CORS(app)
 
-    #app.config.update(config or {})
     app.config.from_envvar('TBAPI_SETTINGS', silent=True)
-
     app.secret_key = '12345678'
 
-    from tbapi.db import db
+    ## App Creation
     db.init_app(app)
-
-    from tbapi.bcrypt import bcrypt
-    bcrypt.init_app(app)
-
     # Reflect only the structure of the mPOWEr db.
     with app.app_context():
         db.reflect(bind='mpower')
+        
+    from .services import oauth2
+    from . import auth, blueprints
 
-    from tbapi.models import Patient, MpowerUser
-
-    from tbapi.blueprints.api import api
-    from tbapi.blueprints.static import static
-    from tbapi.blueprints.oauth import oauth
-
-    app.register_blueprint(api, url_prefix='/api/v1.0')
-    app.register_blueprint(static, url_prefix='')
-    app.register_blueprint(oauth, url_prefix='/oauth')
-
+    #auth.init_app(app)
     oauth2.init_app(app)
-    bind_sqlalchemy(oauth2, db.session, user=User, token=Token,
-                        client=Client, grant=Grant, current_user=current_user)
-
-
-    # register_cli(app)
-    # register_teardowns(app)
-
-
-    # @app.before_request
-    # def load_current_user():
-    #     user = User.query.get(1)
-    #     g.user = user
+    blueprints.init_app(app)
 
     return app
