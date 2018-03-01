@@ -1,41 +1,34 @@
-from flask import Blueprint, render_template, make_response, jsonify, flash, redirect, url_for, request, current_app
-from tbapi.models import *
+from flask import Blueprint
+from flask import url_for, redirect, render_template
+from ..auth import current_user, logout as _logout
+from ..forms.user import AuthenticateForm, UserCreationForm
 
-bp = Blueprint('oauth', __name__)
-
-# TODO: Ensure Secure @secure_required
-@bp.route('/authorize', methods=["GET", "POST"])
-def authorize(*args, **kwargs):
-    if request.method == 'GET':
-        client_id = kwargs.get('client_id')
-        client = Client.query.filter_by(client_id=client_id).first()
-        kwargs['client'] = client
-        return render_template('oauthorize.html', **kwargs)
-    
-    if request.method == 'HEAD':
-        # if HEAD is supported properly, request parameters like
-        # client_id should be validated the same way as for 'GET'
-        response = make_response('', 200)
-        response.headers['X-Client-ID'] = kwargs.get('client_id')
-        return response
-
-    confirm = request.form.get('confirm', 'no')
-    return confirm == 'yes'
-
-@bp.route('/oauth/token', methods=['POST', 'GET'])
-def access_token():
-    return {}
-
-@bp.route('/oauth/revoke', methods=['POST'])
-def revoke_token(): pass
+bp = Blueprint('account', __name__)
 
 
+@bp.route('/login', methods=['GET', 'POST'])
+def login():
+    if current_user:
+        return redirect(url_for('static.hello'))
+    form = AuthenticateForm()
+    if form.validate_on_submit():
+        form.login()
+        return redirect(url_for('static.hello'))
+    return render_template('account/login.html', form=form)
 
-# app.post('/api/login', (req, res) => {
-#   setTimeout(() => (
-#     res.json({
-#       success: true,
-#       token: API_TOKEN,
-#     })
-#   ), FAKE_DELAY);
-# });
+
+@bp.route('/logout')
+def logout():
+    _logout()
+    return redirect(url_for('static.hello'))
+
+
+@bp.route('/signup', methods=['GET', 'POST'])
+def signup():
+    if current_user:
+        return redirect(url_for('static.hello'))
+    form = UserCreationForm()
+    if form.validate_on_submit():
+        form.signup()
+        return redirect(url_for('static.hello'))
+    return render_template('account/signup.html', form=form)

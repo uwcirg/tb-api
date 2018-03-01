@@ -1,18 +1,14 @@
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.orm import relationship
-from sqlalchemy import inspect
-from authlib.flask.oauth2.sqla import OAuth2ClientMixin
-from authlib.flask.oauth2.sqla import OAuth2TokenMixin
-
+from sqlalchemy import Column
+from sqlalchemy import (
+    Integer, String, Text
+)
 import json
 
-from .base import db, Base, SerializeMixin
+from .base import db, SerializeMixin
 
 class Patient(SerializeMixin, db.Model):
     __bind_key__ = 'mpower'
     __table__ = db.Model.metadata.tables['patients']
-
-
 
 # `users`.`username`,
 # `users`.`password`,

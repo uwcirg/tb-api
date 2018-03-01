@@ -9,10 +9,10 @@ from authlib.flask.oauth2.sqla import (
     OAuth2TokenMixin,
 )
 
-from .base import Base
+from .base import db, SerializeMixin
 
 
-class OAuth2Client(Base, OAuth2ClientMixin):
+class OAuth2Client(db.Model, OAuth2ClientMixin):
     __tablename__ = 'oauth2_client'
 
     id = Column(Integer, primary_key=True)
@@ -32,14 +32,14 @@ class OAuth2Client(Base, OAuth2ClientMixin):
         return grant_type in self.allowed_grants.split()
 
 
-class OAuth2AuthorizationCode(Base, OAuth2AuthorizationCodeMixin):
+class OAuth2AuthorizationCode(db.Model, OAuth2AuthorizationCodeMixin):
     __tablename__ = 'oauth2_code'
 
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, nullable=False)
 
 
-class OAuth2Token(Base, OAuth2TokenMixin):
+class OAuth2Token(db.Model, OAuth2TokenMixin):
     __tablename__ = 'oauth2_token'
 
     id = Column(Integer, primary_key=True)

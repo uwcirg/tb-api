@@ -33,33 +33,28 @@ target_metadata = current_app.extensions['migrate'].db.metadata
 # can be acquired:
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
+def include_object(object, name, type_, reflected, compare_to):
+    logger.info("INCLUDE: object: %s | name: %s | type: %s | reflected: %s | compare_to: %s", object.info, name, type_, reflected, compare_to)
 
-def exclude_tables_from_config(config_):
-    tables_ = config_.get("tables", None)
-    if tables_ is not None:
-        tables = tables_.split(",")
-    print(tables)
-    return tables
-
-exclude_tables = exclude_tables_from_config(config.get_section('alembic:exclude'))
-
+    if (not reflected):
+        return True
+    else:
+        return False
 
 def get_metadata(bind):
     """Return the metadata for a bind."""
     if bind == '':
         bind = None
+
     m = MetaData()
+
+    logger.info(target_metadata)
+
     for t in target_metadata.tables.values():
         if t.info.get('bind_key') == bind:
             t.tometadata(m)
     return m
 
-def include_object(object, name, type_, reflected, compare_to):
-    print(type_)
-    if type_ == "table" and name in exclude_tables:
-        return False
-    else:
-        return True
 
 def run_migrations_offline():
     """Run migrations in 'offline' mode.
@@ -89,8 +84,8 @@ def run_migrations_offline():
         with open(file_, 'w') as buffer:
             context.configure(url=rec['url'], output_buffer=buffer,
                               target_metadata=get_metadata(name),
-                              include_object=include_object,
-                              literal_binds=True)
+                              literal_binds=True,
+                              include_object=include_object)
             with context.begin_transaction():
                 context.run_migrations(engine_name=name)
 
@@ -145,11 +140,11 @@ def run_migrations_online():
             logger.info("Migrating database %s" % (name or '<default>'))
             context.configure(
                 connection=rec['connection'],
+                include_object=include_object,
                 upgrade_token="%s_upgrades" % name,
                 downgrade_token="%s_downgrades" % name,
                 target_metadata=get_metadata(name),
                 process_revision_directives=process_revision_directives,
-                include_object=include_object,
                 **current_app.extensions['migrate'].configure_args
             )
             context.run_migrations(engine_name=name)

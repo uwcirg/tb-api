@@ -49,13 +49,13 @@ services:
   tbapp-db:
     restart: always
     image: mysql:5.7
-    hostname: app-db
+    hostname: tbapp-db
     volumes:
       - type: volume
         source: tbapp-db
         target: /var/lib/mysql
-    #ports:
-      #- "3306:3306"
+    ports:
+      - "3307:3306"
     container_name: tbapp-db
     environment:
       MYSQL_ROOT_PASSWORD: root

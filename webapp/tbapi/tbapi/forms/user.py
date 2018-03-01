@@ -3,7 +3,8 @@ from wtforms.fields.html5 import EmailField
 from wtforms.validators import DataRequired
 from wtforms.validators import StopValidation
 from .base import BaseForm
-from ..models import db, User
+from ..models import db
+from ..models.mpower import User
 from ..auth import login
 
 
