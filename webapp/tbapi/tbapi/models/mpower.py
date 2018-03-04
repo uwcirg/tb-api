@@ -47,7 +47,7 @@ class User(SerializeMixin, db.Model):
         user = cls.query.filter_by(email=profile.email).first()
         if user:
             return user
-        user = cls(email=profile.email, name=profile.name)
+        user = cls(email=profile.email, username=profile.name)
         user.password = '!'
         with db.auto_commit():
             db.session.add(user)

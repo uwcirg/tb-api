@@ -24,5 +24,4 @@ class LoginConfirmForm(BaseForm):
         if not user or not user.check_password(field.data):
             raise StopValidation('El correo electrónico que ingresaste no coinciden con ninguna cuenta.')
 
-        if self.confirm.data:
-            login(user, False)
+        login(user, False)

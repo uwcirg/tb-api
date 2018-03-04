@@ -1,6 +1,7 @@
 version: '3.3'
 services:
   web:
+    restart: always
     build:
       context: ./webapp
       dockerfile: Dockerfile
@@ -32,7 +33,7 @@ services:
     image: mysql:5.7
     hostname: mpower-db
     volumes:
-      - "./db/sql:/docker-entrypoint-initdb.d"
+      - "./db/sql/mpower-db:/docker-entrypoint-initdb.d"
       - type: volume
         source: mpower-db
         target: /var/lib/mysql
@@ -51,6 +52,7 @@ services:
     image: mysql:5.7
     hostname: tbapp-db
     volumes:
+      - "./db/sql/tbapp-db:/docker-entrypoint-initdb.d"
       - type: volume
         source: tbapp-db
         target: /var/lib/mysql

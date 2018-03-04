@@ -26,11 +26,11 @@ def logout():
 @bp.route('/signup', methods=['GET', 'POST'])
 def signup():
     if current_user:
-        return redirect(url_for('static.hello'))
+        return redirect("https://tb-mobile.cirg.washington.edu/")
     form = UserCreationForm()
     if form.validate_on_submit():
         form.signup()
-        return redirect("")
+        return redirect("https://tb-mobile.cirg.washington.edu/")
     return render_template('account/signup.html', form=form)
 
 @bp.route('/myaccount', methods=['GET'])

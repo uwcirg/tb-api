@@ -10,20 +10,15 @@ from ..services.oauth2 import authorization, scopes
 bp = Blueprint('oauth2', __name__)
 
 
-@bp.route('/authorize', methods=['GET'])
+@bp.route('/authorize', methods=['GET', 'POST'])
 def authorize():
     if current_user:
-        grant_user = current_user
         form = None
     else: 
         form = LoginConfirmForm()
-    
-    if (form and form.validate_on_submit()):
-        if form.confirm.data: 
-            # granted by current user
-            grant_user = current_user
-        else:
-            grant_user = None
+
+    if (form and form.validate_on_submit()) or current_user:
+        grant_user = current_user
         return authorization.create_authorization_response(grant_user)
 
     try:
