@@ -6,7 +6,7 @@ services:
       context: ./webapp
       dockerfile: Dockerfile
     ports:
-     - "8080:5000"
+     - "5060:5000"
     volumes:
       - "./webapp/tbapi:/usr/src/app"
     links:
