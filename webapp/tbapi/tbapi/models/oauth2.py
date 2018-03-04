@@ -8,7 +8,7 @@ from authlib.flask.oauth2.sqla import (
     OAuth2AuthorizationCodeMixin,
     OAuth2TokenMixin,
 )
-
+ 
 from .base import db, SerializeMixin
 
 

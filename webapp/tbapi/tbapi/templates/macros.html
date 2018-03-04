@@ -1,14 +1,15 @@
 {% macro render_field(field, label_html=None) %}
   <div class="form-group {% if field.errors %} has-error{% endif %}">
-    {% if label_html %}
+    <!-- {% if label_html %}
       <label class='control-label'>{{ label_html|safe }}</label>
     {% else %}
       <span>{{ field.label() }}</span>
-    {% endif %}
+    {% endif %} -->
+    
     {% if field.flags.required %}
-      {{ field(class_="form-control", required=True) }}
+      {{ field(class_="form-control input-lg", required=True, placeholder=field.description) }}
     {% else %}
-      {{ field(class_="form-control") }}
+      {{ field(class_="form-control input-lg", placeholder=field.description) }}
     {% endif %}
     {% if field.errors %}
       <ul class="form-field_errors">

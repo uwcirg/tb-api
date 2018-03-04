@@ -19,7 +19,7 @@ def login():
 
 @bp.route('/logout')
 def logout():
-    _logout()
+    _logout() 
     return redirect(url_for('account.login'))
 
 
@@ -30,7 +30,7 @@ def signup():
     form = UserCreationForm()
     if form.validate_on_submit():
         form.signup()
-        return redirect(url_for('static.hello'))
+        return redirect("")
     return render_template('account/signup.html', form=form)
 
 @bp.route('/myaccount', methods=['GET'])

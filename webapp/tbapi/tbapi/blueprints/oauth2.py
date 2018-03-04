@@ -10,20 +10,22 @@ from ..services.oauth2 import authorization, scopes
 bp = Blueprint('oauth2', __name__)
 
 
-@bp.route('/authorize', methods=['GET', 'POST'])
+@bp.route('/authorize', methods=['GET'])
 def authorize():
     if current_user:
-        form = ConfirmForm()
-    else:
+        grant_user = current_user
+        form = None
+    else: 
         form = LoginConfirmForm()
-
-    if form.validate_on_submit():
-        if form.confirm.data:
+    
+    if (form and form.validate_on_submit()):
+        if form.confirm.data: 
             # granted by current user
             grant_user = current_user
         else:
             grant_user = None
         return authorization.create_authorization_response(grant_user)
+
     try:
         grant = authorization.validate_authorization_request()
     except OAuth2Error as error:
@@ -32,6 +34,7 @@ def authorize():
         return jsonify(payload), error.status_code
 
     client = OAuth2Client.get_by_client_id(request.args['client_id'])
+
     return render_template(
         'account/authorize.html',
         grant=grant,

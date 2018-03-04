@@ -9,9 +9,9 @@ from ..auth import login
 
 
 class AuthenticateForm(BaseForm):
-    email = EmailField(validators=[DataRequired()])
-    password = PasswordField(validators=[DataRequired()])
-
+    email = EmailField(description='Correo electrónico', validators=[DataRequired()])
+    password = PasswordField(description='Contraseña', validators=[DataRequired()])
+ 
     def __init__(self, *args, **kwargs):
         super(AuthenticateForm, self).__init__(*args, **kwargs)
         self._user = None
@@ -20,7 +20,7 @@ class AuthenticateForm(BaseForm):
         email = self.email.data.lower()
         user = User.query.filter_by(email=email).first()
         if not user or not user.check_password(field.data):
-            raise StopValidation('Email or password is invalid.')
+            raise StopValidation('El correo electrónico que ingresaste no coinciden con ninguna cuenta.')
         self._user = user
 
     def login(self):
@@ -29,20 +29,28 @@ class AuthenticateForm(BaseForm):
 
 
 class UserCreationForm(BaseForm):
-    email = EmailField(validators=[DataRequired()])
-    pw = PasswordField(validators=[DataRequired()])
+    email = EmailField(description='Correo electrónico', validators=[DataRequired()])
+    password = PasswordField(description='Contraseña', validators=[DataRequired()])
 
     def validate_email(self, field):
         email = field.data.lower()
         user = User.query.filter_by(email=email).first()
         if user:
-            raise StopValidation('Email has been registered.')
+            raise StopValidation('Este correo electrónico existe.')
 
     def signup(self):
         email = self.email.data.lower()
         user = User(email=email)
-        user.pw = self.pw.data
+        user.pw = self.password.data
     
+        # try:
+        #     db.session.add(user)
+        #     db.session.commit()
+        # except:
+        #     db.session.rollback()
+        #     raise
+
+
         try:
             db.session.add(user)
             db.session.commit()

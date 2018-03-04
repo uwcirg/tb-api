@@ -73,6 +73,11 @@ class Client2Form(BaseForm):
             allowed_scopes=' '.join(self.allowed_scopes.data),
             allowed_grants=' '.join(self.allowed_grants.data),
         )
-        with db.auto_commit():
-            db.session.add(client)
+        
+        try:
+            db.session.add(user)
+            db.session.commit()
+        except:
+            db.session.rollback()
+            raise
         return client
