@@ -55,3 +55,14 @@ class User(SerializeMixin, db.Model):
 
     def to_dict(self):
         return dict(id=self.id, name=self.name)    
+
+
+class UserAclLeaf(db.Model):
+    __bind_key__ = 'mpower'
+    __table__ = db.Model.metadata.tables['user_acl_leafs']
+
+class IdentityProvider(db.Model):
+    __bind_key__ = 'mpower'
+    __table__ = db.Model.metadata.tables['identity_providers']
+    
+    

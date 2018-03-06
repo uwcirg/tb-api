@@ -4,7 +4,7 @@ from wtforms.validators import DataRequired
 from wtforms.validators import StopValidation
 from .base import BaseForm
 from ..models import db
-from ..models.mpower import User
+from ..models.mpower import * 
 from ..auth import login
 
 
@@ -42,17 +42,25 @@ class UserCreationForm(BaseForm):
         email = self.email.data.lower()
         user = User(email=email)
         user.pw = self.password.data
-    
-        # try:
-        #     db.session.add(user)
-        #     db.session.commit()
-        # except:
-        #     db.session.rollback()
-        #     raise
 
 
         try:
             db.session.add(user)
+            db.session.commit()
+        except:
+            db.session.rollback()
+            raise
+        
+
+        patient = Patient(id=user.get_user_id(), MRN=user.get_user_id(), test_flag=0, ethnicity='na')
+        acl_leaf = UserAclLeaf(user_id=user.get_user_id(), acl_alias='aclParticipantTreatment')
+        id_p = IdentityProvider(user_id=user.get_user_id(), idp='truenth')
+
+        try:
+            db.session.add(user)
+            db.session.add(patient)
+            db.session.add(acl_leaf)
+            db.session.add(id_p)
             db.session.commit()
         except:
             db.session.rollback()
