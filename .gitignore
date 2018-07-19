@@ -28,3 +28,6 @@ nosetests.xml
 
 # Database Dumps
 dump.sql
+
+# Docker
+.env
