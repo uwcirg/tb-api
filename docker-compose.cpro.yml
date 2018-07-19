@@ -2,7 +2,7 @@ version: '3.3'
 services:
   cpro:
     build:
-      context: https://fake-username:${ACCESS_TOKEN}@gitlab.cirg.washington.edu/svn/dhair2.git
+      context: https://fake-username:${REPO_ACCESS_TOKEN}@gitlab.cirg.washington.edu/svn/dhair2.git
       dockerfile: docker/Dockerfile
     ports:
       - "8080:8080"
