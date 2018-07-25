@@ -1,0 +1,21 @@
+version: '3.3'
+services:
+  cpro:
+    build:
+      context: https://fake-username:${REPO_ACCESS_TOKEN}@gitlab.cirg.washington.edu/svn/dhair2.git#feature/tb_mpower-styling
+      dockerfile: docker/Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      INSTANCE_ID: mpower_tb
+      DATABASE_URL: mysql://${MYSQL_USER:-mpower}:${MYSQL_PASSWORD:-mpower}@mpower-db:3306/${MYSQL_DATABASE:-mpower_demo}
+    command: bash -c '
+      env &&
+      wait-for-it.sh --timeout=30 --host=mpower-db --port=3306 --strict &&
+      cake initialize_database &&
+      apache2-foreground
+      '
+    depends_on:
+      - mpower-db
+    networks:
+      - tbapi

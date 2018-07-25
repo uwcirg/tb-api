@@ -6,7 +6,8 @@ services:
       context: ./webapp
       dockerfile: Dockerfile
     ports:
-     - "5060:5000"
+      - target: 5000
+        published: ${API_EXTERNAL_PORT:-5060}
     volumes:
       - "./webapp/tbapi:/usr/src/app"
     links:
