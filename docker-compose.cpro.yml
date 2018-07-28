@@ -16,6 +16,7 @@ services:
       cake initialize_database &&
       apache2-foreground
       '
+      
     depends_on:
       - mpower-db
     networks:

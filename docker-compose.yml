@@ -1,5 +1,17 @@
 version: '3.3'
 services:
+  client: 
+    restart: always
+    ports:
+      - "8082:3000"
+    build:
+      context: https://github.com/uwcirg/tb-mobile-app.git#feature/docker-compose-cpro
+    # volumes:
+    #   - ".:/usr/src/app"
+    stdin_open: true
+    tty: true
+    container_name: tb-mobile-app  
+    command: yarn install && yarn start
   web:
     restart: always
     build:
@@ -9,12 +21,15 @@ services:
       - target: 5000
         published: ${API_EXTERNAL_PORT:-5060}
     volumes:
-      - "./webapp/tbapi:/usr/src/app"
+      - "web:/usr/src/app"
     links:
       - mpower-db
       - tbapp-db
     container_name: tb-api
     stdin_open: true
+    #command: /usr/local/bin/gunicorn -w 2 -b :8000 project:app
+    command: /wait && /usr/local/bin/gunicorn -w 2 -b :8000 project:app
+    
     tty: true
     depends_on:
       - mpower-db
@@ -29,6 +44,18 @@ services:
       MODE: 'dev'
     networks:
       - tbapi
+
+  nginx:
+    restart: always
+    build: ./nginx
+    ports:
+      - "8081:80"
+    volumes:
+      - web:/www/static
+    depends_on:
+      - web
+    networks:
+      - tbapi
   mpower-db:
     restart: always
     image: mysql:5.7
@@ -36,10 +63,10 @@ services:
     volumes:
       - "./db/sql/mpower-db:/docker-entrypoint-initdb.d"
       - type: volume
-        source: mpower-db
+        source: mpower-db-volume
         target: /var/lib/mysql
-    ports:
-      - "3306:3306"
+    # ports:
+    #   - "3306:3306"
     container_name: mpower-db
     environment:
       MYSQL_ROOT_PASSWORD: root
@@ -48,6 +75,7 @@ services:
       MYSQL_PASSWORD: mpower
     networks:
       - tbapi
+
   tbapp-db:
     restart: always
     image: mysql:5.7
@@ -55,10 +83,10 @@ services:
     volumes:
       - "./db/sql/tbapp-db:/docker-entrypoint-initdb.d"
       - type: volume
-        source: tbapp-db
+        source: tbapp-db-volume
         target: /var/lib/mysql
-    ports:
-      - "3307:3306"
+    # ports:
+    #   - "3307:3306"
     container_name: tbapp-db
     environment:
       MYSQL_ROOT_PASSWORD: root
@@ -67,9 +95,11 @@ services:
       MYSQL_PASSWORD: tbapi
     networks:
       - tbapi
+
 volumes:
-  tbapi-app:
-  mpower-db:
-  tbapp-db:
+  web:
+  mpower-db-volume:
+  tbapp-db-volume:
+
 networks:
   tbapi:
