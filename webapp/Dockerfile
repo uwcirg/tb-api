@@ -9,7 +9,8 @@ WORKDIR /home/flask/app/web
 
 
 COPY . /home/flask/app/web
-RUN pip install --editable .
+
+RUN pip install --editable ./tbapi
 
 RUN chown -R flask:flaskgroup /home/flask
 

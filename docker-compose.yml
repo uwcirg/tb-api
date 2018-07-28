@@ -11,7 +11,7 @@ services:
     stdin_open: true
     tty: true
     container_name: tb-mobile-app  
-    command: yarn install && yarn start
+    command: yarn start
   web:
     restart: always
     build:
@@ -28,7 +28,7 @@ services:
     container_name: tb-api
     stdin_open: true
     #command: /usr/local/bin/gunicorn -w 2 -b :8000 project:app
-    command: /wait && /usr/local/bin/gunicorn -w 2 -b :8000 project:app
+    command: /usr/local/bin/gunicorn -w 2 -b :5000 tbapi_app:app
     
     tty: true
     depends_on:
