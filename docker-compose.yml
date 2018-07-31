@@ -3,7 +3,7 @@ services:
   client: 
     restart: always
     ports:
-      - "8082:3000"
+      - "3060:3000"
     build:
       context: https://github.com/uwcirg/tb-mobile-app.git#feature/docker-compose-cpro
     # volumes:
@@ -12,6 +12,12 @@ services:
     tty: true
     container_name: tb-mobile-app  
     command: yarn start
+    environment:
+      NODE_ENV: development
+      REACT_APP_API_PATH: https://tb-api.cirg.washington.edu
+      REACT_APP_REDIRECT_PATH: https://tb-mobile.cirg.washington.edu/redirect
+      REACT_APP_CHECKIN_PATH: https://mpower-dev.cirg.washington.edu/mpower_tb-ivanc/surveys/new_session?project=daily_check_in
+      REACT_APP_CLIENT_ID: skwIPnbi7N3uIvNysUbi0xfXwnWaIMR1MCJxz8rV0dGxeMJD    
   web:
     restart: always
     build:
@@ -19,7 +25,6 @@ services:
       dockerfile: Dockerfile
     ports:
       - target: 5000
-        published: ${API_EXTERNAL_PORT:-5060}
     volumes:
       - "web:/usr/src/app"
     links:
@@ -49,7 +54,7 @@ services:
     restart: always
     build: ./nginx
     ports:
-      - "8081:80"
+      - "5060:80"
     volumes:
       - web:/www/static
     depends_on:
