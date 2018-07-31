@@ -1,6 +1,6 @@
-# tb API
+# TB API
 
-A simplified FHIR-based backend API application using the mPOWEr data model.
+A FHIR-based backend API application that connects to the cPRO data model.
 
 ## Setup
 (see https://docs.docker.com/compose/gettingstarted/)
@@ -13,27 +13,32 @@ A simplified FHIR-based backend API application using the mPOWEr data model.
 3.  Build and run the containers
     ```
     cd tb-api
-    docker-compose build
-    docker-compose up -d
+    docker-compose up -d --build
     ```
 
-4. Navigate to http://localhost:5000/hello. You should get an `Welcome to mPOWEr!` message.
+4. The following `localhost` ports will be used for the respective apps (see docker-compose files): 
+    * 8080: Legacy cPRO application
+    * 3060: TB Client - the responsive React web app
+    * 5060: TB API - the Flask backend app
+  
+Navigate to http://localhost:5060/hello. You should get an `Welcome to TB API!` message.
 
 ## Debugging / Playing Around
-The database is created using the `initdb.sql` file in the `/db/sql/` directory. The database container uses the volume `tbapi-db` for database data. It also maps a
-2nd volume for initializing the database, which only happens if the main volume does not exist yet (I think).
+The database is created using the `initdb.sql` file in the `/db/sql/` directory. The database container uses the volume `tbapi-db` for database data. It also maps a 2nd volume for initializing the database, which only happens if the main volume does not exist yet (I think).
 
-The database container also exposes the mysql port (3306) as port 6603 externally.
+The database container also exposes the mysql port (3306) as port 6603 externally, if enabled in the `docker-compose.yml` file.
 
 To (1) re-create the db, (2) re-load it with data from initdb.sql, and (3) connect to it from the host machine (command-line mysql client or workbench):
 
-```
-cd tb-api
-docker-compose down -v
-docker-compose up -d --build db
+1. Make sure the `6603` external port is mapped in the `docker-compose.yml` file. You can choose any port number you want that's unused.
+2.  
+            ```
+            cd tb-api
+            docker-compose down -v
+            docker-compose up -d --build 
 
-mysql -u root -p root -h localhost -P 6603
-```
+            mysql -u root -p root -h localhost -P 6603
+            ```
 
 `docker-compose down` removes all related volumes, networks, and containers, so we start at a clean slate.
 
