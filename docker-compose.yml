@@ -10,7 +10,6 @@ services:
     #   - ".:/usr/src/app"
     stdin_open: true
     tty: true
-    container_name: tb-mobile-app  
     command: yarn start
     environment:
       NODE_ENV: development
@@ -30,7 +29,6 @@ services:
     links:
       - mpower-db
       - tbapp-db
-    container_name: tb-api
     stdin_open: true
     #command: /usr/local/bin/gunicorn -w 2 -b :8000 project:app
     command: /usr/local/bin/gunicorn -w 2 -b :5000 tbapi_app:app
@@ -72,7 +70,6 @@ services:
         target: /var/lib/mysql
     # ports:
     #   - "3306:3306"
-    container_name: mpower-db
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: mpower_demo
@@ -92,7 +89,6 @@ services:
         target: /var/lib/mysql
     # ports:
     #   - "3307:3306"
-    container_name: tbapp-db
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: tbapi
