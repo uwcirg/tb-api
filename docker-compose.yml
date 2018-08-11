@@ -1,46 +1,52 @@
 version: '3.3'
 services:
+
   client: 
     restart: always
     ports:
-      - "3060:3000"
+      - target: 3000
+        published: ${TB_MOBILE_EXTERNAL_PORT:-3060}
     build:
-      context: https://github.com/uwcirg/tb-mobile-app.git#feature/docker-compose-cpro
-    # volumes:
-    #   - ".:/usr/src/app"
+      context: ${TB_MOBILE_CONTEXT:-https://github.com/uwcirg/tb-mobile-app.git#feature/docker-compose-cpro}
     stdin_open: true
     tty: true
     command: yarn start
     environment:
       NODE_ENV: development
-      REACT_APP_API_PATH: https://tb-api.cirg.washington.edu
-      REACT_APP_REDIRECT_PATH: https://tb-mobile.cirg.washington.edu/redirect
-      REACT_APP_CHECKIN_PATH: https://mpower-dev.cirg.washington.edu/mpower_tb-ivanc/surveys/new_session?project=daily_check_in
-      REACT_APP_CLIENT_ID: skwIPnbi7N3uIvNysUbi0xfXwnWaIMR1MCJxz8rV0dGxeMJD    
+      REACT_APP_API_PATH:
+      REACT_APP_REDIRECT_PATH:
+      REACT_APP_CHECKIN_PATH:
+      REACT_APP_CLIENT_ID:
+
   web:
     restart: always
     build:
       context: ./webapp
       dockerfile: Dockerfile
     ports:
-      - target: 5000
+      - target: ${TB_API_INTERNAL_PORT:-5000}
+        published: 5061
     volumes:
       - "web:/usr/src/app"
     links:
       - mpower-db
       - tbapp-db
     stdin_open: true
-    #command: /usr/local/bin/gunicorn -w 2 -b :8000 project:app
-    command: /usr/local/bin/gunicorn -w 2 -b :5000 tbapi_app:app
-    
+    command: bash -c '/wait && /usr/local/bin/gunicorn -w 2 -b :5000 tbapi_app:app'
     tty: true
     depends_on:
       - mpower-db
       - tbapp-db
     environment:
+      CPRO_DATABASE_USER: mpower
+      CPRO_DATABASE_PASSWORD: mpower
+      CPRO_DATABASE_NAME: mpower_demo
+      TB_DATABASE_USER: tbapi
+      TB_DATABASE_PASSWORD: tbapi
+      TB_DATABASE_NAME: tbapi
+
       WAIT_HOSTS: mpower-db:3306, tbapp-db:3306
       WAIT_BEFORE_HOSTS: 10
-      #FLASK_APP: "tbapi.factory:create_app()"
       FLASK_APP: "tbapi_app.py"
       FLASK_DEBUG: 1
       AUTHLIB_INSECURE_TRANSPORT: 'true'
@@ -52,13 +58,36 @@ services:
     restart: always
     build: ./nginx
     ports:
-      - "5060:80"
+      - target: 80
+        published: ${TB_API_EXTERNAL_PORT:-5060}
     volumes:
       - web:/www/static
     depends_on:
       - web
     networks:
       - tbapi
+
+  cpro:
+    build:
+      context: ${CPRO_CONTEXT:-https://fake-username:${REPO_ACCESS_TOKEN}@gitlab.cirg.washington.edu/svn/dhair2.git#feature/tb_mpower-styling}
+      dockerfile: docker/Dockerfile
+    ports:
+      - target: 80
+        published: 8080
+    environment:
+      INSTANCE_ID: mpower_tb
+      DATABASE_URL: mysql://${CPRO_DATABASE_USER:-mpower}:${CPRO_DATABASE_PASSWORD:-mpower}@mpower-db:3306/${CPRO_DATABASE_NAME:-mpower_demo}
+    command: bash -c '
+      env &&
+      wait-for-it.sh --timeout=30 --host=mpower-db --port=3306 --strict &&
+      cake initialize_database &&
+      apache2-foreground
+      '
+    depends_on:
+      - mpower-db
+    networks:
+      - tbapi
+
   mpower-db:
     restart: always
     image: mysql:5.7
@@ -68,13 +97,11 @@ services:
       - type: volume
         source: mpower-db-volume
         target: /var/lib/mysql
-    # ports:
-    #   - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: mpower_demo
-      MYSQL_USER: mpower
-      MYSQL_PASSWORD: mpower
+      MYSQL_USER: ${CPRO_DATABASE_USER:-mpower}
+      MYSQL_PASSWORD: ${CPRO_DATABASE_PASSWORD:-mpower}
+      MYSQL_DATABASE: ${CPRO_DATABASE_NAME:-mpower_demo}
     networks:
       - tbapi
 
@@ -87,13 +114,11 @@ services:
       - type: volume
         source: tbapp-db-volume
         target: /var/lib/mysql
-    # ports:
-    #   - "3307:3306"
     environment:
+      MYSQL_USER: ${TB_DATABASE_USER:-tbapi}
+      MYSQL_PASSWORD: ${TB_DATABASE_PASSWORD:-tbapi}
+      MYSQL_DATABASE: ${TB_DATABASE_NAME:-tbapi}
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: tbapi
-      MYSQL_USER: tbapi
-      MYSQL_PASSWORD: tbapi
     networks:
       - tbapi
 
