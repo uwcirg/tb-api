@@ -24,7 +24,7 @@ services:
       context: ./webapp
       dockerfile: Dockerfile
     ports:
-      - "5060:5000"
+      - target: 5000
     volumes:
       - "web:/usr/src/app"
     links:

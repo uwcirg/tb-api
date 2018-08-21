@@ -1,0 +1,9 @@
+version: '3.3'
+services:
+  web:
+    command: bash -c '/wait && flask run --host 0.0.0.0 --port 5000'
+    volumes:
+      - source: c:\users\rossumg\pyworkspace\tb-api\webapp
+        target: /home/flask/app/web
+        type: bind
+        read_only: true

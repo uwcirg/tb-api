@@ -1,0 +1,31 @@
+# Paths & Domain Names
+TB_MOBILE_PATH=https://tb-mobile.cirg.washington.edu
+TB_API_PATH=https://tb-api.cirg.washinton.edu
+CPRO_API_PATH=https://mpower-api.cirg.washington.edu/surveys
+TB_API_ENDPOINT=/api/v1.0
+
+# Client Ids
+TB_MOBILE_CLIENT_ID=skwIPnbi7N3uIvNysUbi0xfXwnWaIMR1MCJxz8rV0dGxeMJD   
+TB_MOBILE_TOKEN_ID=YCKFtgasJwYoq7C6nPDcryJwuHqpXAn3Q1ErobdCFB
+CPRO_API_CLIENT_ID=pkwIPnbi7N3uIvNysUbi0xfXwnWaIMR1MCJxz8rV0dGxeMJD
+
+# TB Mobile
+REACT_APP_CLIENT_ID=$TB_MOBILE_CLIENT_ID
+REACT_APP_API_PATH=$TB_API_PATH
+REACT_APP_REDIRECT_PATH=$TB_MOBILE_PATH/redirect
+REACT_APP_SURVEY_PATH=$CPRO_API_PATH
+
+# Wait for DBs to be ready
+WAIT_HOSTS=mower-db:3306, tbapp-db:3306
+WAIT_BEFORE_HOSTS=10
+
+# cPRO DB
+CPRO_DATABASE_USER=mpower
+CPRO_DATABASE_PASSWORD=mpower
+CPRO_DATABASE_NAME=mpower_demo
+
+# TB DB
+TB_DATABASE_USER=tbapi
+TB_DATABASE_PASSWORD=tbapi
+TB_DATABASE_NAME=tbapi
+
