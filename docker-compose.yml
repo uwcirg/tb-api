@@ -69,7 +69,7 @@ services:
 
   cpro:
     build:
-      context: ${CPRO_CONTEXT:-https://fake-username:${REPO_ACCESS_TOKEN}@gitlab.cirg.washington.edu/svn/dhair2.git#feature/tb_mpower-styling}
+      context: ${CPRO_CONTEXT:-https://fake-username:REPO_ACCESS_TOKEN@gitlab.cirg.washington.edu/svn/dhair2.git#feature/tb_mpower-styling}
       dockerfile: docker/Dockerfile
     ports:
       - target: 80

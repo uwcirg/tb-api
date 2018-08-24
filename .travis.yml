@@ -1,0 +1,36 @@
+---
+language: python
+python: "3.6"
+sudo: false
+cache: pip
+services:
+  - docker
+
+env:
+  global:
+    - SECRET_KEY="$(openssl rand -base64 32)"
+
+    # Remap TravisCI-named environment variables to provider-independent names
+    - GH_USERNAME="$(echo $TRAVIS_REPO_SLUG | cut --delimiter / --fields 1)"
+    - GH_REPO="$(echo $TRAVIS_REPO_SLUG | cut --delimiter / --fields 2)"
+    - GIT_BRANCH="$TRAVIS_BRANCH"
+    - GIT_TAG="$TRAVIS_TAG"
+    - GIT_HASH="$TRAVIS_COMMIT"
+
+before_install:
+  # Rebuild git with openssl instead of gnutls
+  # TLS 1.2 doesn't work with gnutls
+  - wget https://gist.githubusercontent.com/ivan-c/6a02058a51a4cab3b017df8684dca511/raw/43df0d7ff838b6a4e171138b6a7c23583c1fd646/build-git.sh
+  - chmod +x build-git.sh
+  - ./build-git.sh
+
+  - pip install --upgrade pip setuptools
+
+install:
+  - pip install --upgrade docker_compose
+
+script:
+  - docker-compose up --detach
+  - sleep 2m
+  - curl http://localhost:3060 | grep TB
+  - curl http://localhost:5061 | grep 'Hello, World!'
