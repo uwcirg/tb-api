@@ -7,7 +7,7 @@ services:
       - target: 3000
         published: ${TB_MOBILE_EXTERNAL_PORT:-3060}
     build:
-      context: ${TB_MOBILE_CONTEXT:-https://github.com/uwcirg/tb-mobile-app.git#feature/docker-compose-cpro}
+      context: ${TB_MOBILE_CONTEXT:-https://github.com/uwcirg/tb-mobile-app.git}
     stdin_open: true
     tty: true
     command: yarn start
