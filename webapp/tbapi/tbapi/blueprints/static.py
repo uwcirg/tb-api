@@ -12,3 +12,6 @@ def index():
 def hello():
     return 'Welcome to TB API!'
 
+@bp.route('/exception')
+def exception():    
+    raise Exception('My exception!')

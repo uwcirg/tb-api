@@ -12,6 +12,9 @@ COPY . /home/flask/app/web
 
 RUN pip install --editable ./tbapi
 
+COPY ./tbapi/config/logging.conf /logging.conf
+COPY ./tbapi/config/gunicorn.conf /gunicorn.conf
+
 RUN chown -R flask:flaskgroup /home/flask
 
 ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.0.0/wait /wait

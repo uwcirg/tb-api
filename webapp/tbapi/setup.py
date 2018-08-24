@@ -13,7 +13,8 @@ setup(
         'Flask-Migrate',
         'flask-cors',
         'Authlib[crypto]==0.5.1',
-        'gunicorn'
+        'gunicorn',
+        'json-logging-py'
     ],
     setup_requires=[
         'pytest-runner',

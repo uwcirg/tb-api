@@ -45,6 +45,10 @@ services:
       TB_DATABASE_PASSWORD: tbapi
       TB_DATABASE_NAME: tbapi
 
+      GUNICORN_ACCESSLOG: '-'
+      GUNICORN_LOG_FILE: '-'
+      GUNICORN_LOG_LEVEL: debug
+
       WAIT_HOSTS: mpower-db:3306, tbapp-db:3306
       WAIT_BEFORE_HOSTS: 10
       FLASK_APP: "tbapi_app.py"
