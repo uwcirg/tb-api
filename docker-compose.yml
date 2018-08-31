@@ -13,10 +13,10 @@ services:
     command: yarn start
     environment:
       NODE_ENV: development
-      REACT_APP_API_PATH:
-      REACT_APP_REDIRECT_PATH:
-      REACT_APP_CHECKIN_PATH:
-      REACT_APP_CLIENT_ID:
+      REACT_APP_API_PATH: ${REACT_APP_API_PATH:-http://lvh.me:5060}
+      REACT_APP_REDIRECT_PATH: ${REACT_APP_REDIRECT_PATH:-http://lvh.me:3060/redirect}
+      REACT_APP_CPRO_PATH: ${REACT_APP_CPRO_PATH:-http://lvh.me:8080}
+      REACT_APP_CLIENT_ID: ${REACT_APP_CLIENT_ID}
 
   web:
     restart: always
@@ -72,6 +72,7 @@ services:
       - tbapi
 
   cpro:
+    restart: always
     build:
       context: ${CPRO_CONTEXT:-https://fake-username:REPO_ACCESS_TOKEN@gitlab.cirg.washington.edu/svn/dhair2.git#feature/tb_mpower-styling}
       dockerfile: docker/Dockerfile
@@ -80,6 +81,10 @@ services:
         published: ${CPRO_EXTERNAL_PORT:-8080}
     environment:
       INSTANCE_ID: mpower_tb
+      CPRO_API_CLIENT_ID: ${CPRO_API_CLIENT_ID}
+      REACT_APP_API_PATH: ${REACT_APP_API_PATH:-http://lvh.me:5060}
+      REACT_APP_CPRO_PATH: ${REACT_APP_CPRO_PATH:-http://lvh.me:8080}
+      REACT_APP_CLIENT_PATH: ${REACT_APP_CLIENT_PATH:-http://lvh.me:3060}
       DATABASE_URL: mysql://${CPRO_DATABASE_USER:-mpower}:${CPRO_DATABASE_PASSWORD:-mpower}@mpower-db:3306/${CPRO_DATABASE_NAME:-mpower_demo}
     command: bash -c '
       env &&

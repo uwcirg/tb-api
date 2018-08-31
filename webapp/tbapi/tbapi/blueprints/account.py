@@ -1,6 +1,8 @@
 from flask import Blueprint, jsonify
 from flask import url_for, redirect, render_template
 from ..auth import current_user, logout as _logout
+import os
+
 from ..forms.user import AuthenticateForm, UserCreationForm
 
 bp = Blueprint('account', __name__)
@@ -26,11 +28,11 @@ def logout():
 @bp.route('/signup', methods=['GET', 'POST'])
 def signup():
     if current_user:
-        return redirect("https://tb-mobile.cirg.washington.edu/")
+        return redirect(os.environ.get("REACT_APP_CLIENT_PATH"))
     form = UserCreationForm()
     if form.validate_on_submit():
         form.signup()
-        return redirect("https://tb-mobile.cirg.washington.edu/")
+        return redirect(os.environ.get("REACT_APP_CLIENT_PATH"))
     return render_template('account/signup.html', form=form)
 
 @bp.route('/myaccount', methods=['GET'])
