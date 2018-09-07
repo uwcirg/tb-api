@@ -52,9 +52,12 @@ services:
       WAIT_HOSTS: mpower-db:3306, tbapp-db:3306
       WAIT_BEFORE_HOSTS: 10
       FLASK_APP: "tbapi_app.py"
-      FLASK_DEBUG: 1
+      FLASK_ENV: 
       AUTHLIB_INSECURE_TRANSPORT: 'true'
       MODE: 'dev'
+
+      REACT_APP_CLIENT_PATH: ${REACT_APP_CLIENT_PATH:-http://lvh.me:3060}
+
     networks:
       - tbapi
 

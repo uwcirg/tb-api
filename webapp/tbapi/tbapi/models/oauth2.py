@@ -31,7 +31,9 @@ class OAuth2Client(db.Model, OAuth2ClientMixin):
     def check_grant_type(self, grant_type):
         return grant_type in self.allowed_grants.split()
 
-
+    def has_client_secret(self):
+        return False
+        
 class OAuth2AuthorizationCode(db.Model, OAuth2AuthorizationCodeMixin):
     __tablename__ = 'oauth2_code'
 
