@@ -50,11 +50,13 @@ services:
       GUNICORN_LOG_LEVEL: debug
 
       WAIT_HOSTS: mpower-db:3306, tbapp-db:3306
-      WAIT_BEFORE_HOSTS: 10
+      WAIT_BEFORE_HOSTS: 2
       FLASK_APP: "tbapi_app.py"
       FLASK_DEBUG: 1
+      FLASK_ENV: development
       AUTHLIB_INSECURE_TRANSPORT: 'true'
       MODE: 'dev'
+      REACT_APP_CLIENT_PATH:
     networks:
       - tbapi
 

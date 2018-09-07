@@ -70,8 +70,8 @@ CREATE TABLE `oauth2_client` (
 
 LOCK TABLES `oauth2_client` WRITE;
 /*!40000 ALTER TABLE `oauth2_client` DISABLE KEYS */;
-INSERT INTO `oauth2_client` VALUES ('skwIPnbi7N3uIvNysUbi0xfXwnWaIMR1MCJxz8rV0dGxeMJD','0',0,'http://lvh.me:3060/redirect','http://lvh.me:3060/redirect','email',1,576,'tb-mobile-app','https://tb-mobile.cirg.washington.edu','implicit');
-INSERT INTO `oauth2_client` VALUES ('pkwIPnbi7N3uIvNysUbi0xfXwnWaIMR1MCJxz8rV0dGxeMJD','0',0,'http://lvh.me:8080/auth/truenth/oauth2callback','http://lvh.me:8080/auth/truenth/oauth2callback','email',2,576,'mpower-tb','http://lvh.me:8080','authorization_code');
+INSERT INTO `oauth2_client` VALUES ('skwIPnbi7N3uIvNysUbi0xfXwnWaIMR1MCJxz8rV0dGxeMJD','0',0,'https://tb-mobile.cirg.washington.edu/redirect','https://tb-mobile.cirg.washington.edu/redirect','email',1,576,'tb-mobile-app','https://tb-mobile.cirg.washington.edu','implicit');
+INSERT INTO `oauth2_client` VALUES ('pkwIPnbi7N3uIvNysUbi0xfXwnWaIMR1MCJxz8rV0dGxeMJD','0',0,'https://mpower-api.cirg.washington.edu/auth/truenth/oauth2callback','https://mpower-api.cirg.washington.edu/auth/truenth/oauth2callback','email',2,576,'mpower-tb','https://mpower-api.cirg.washington.edu','authorization_code');
 /*!40000 ALTER TABLE `oauth2_client` ENABLE KEYS */;
 UNLOCK TABLES;
 

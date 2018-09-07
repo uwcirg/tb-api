@@ -25,6 +25,7 @@ def authorize():
         grant = authorization.validate_authorization_request()
     except OAuth2Error as error:
         # TODO: add an error page
+        raise Exception(error)
         payload = dict(error.get_body())
         return jsonify(payload), error.status_code
 
@@ -41,7 +42,12 @@ def authorize():
 
 @bp.route('/token', methods=['POST'])
 def issue_token():
-    return authorization.create_token_response()
+    # raise
+    response = authorization.create_token_response()
+    # import pdb;pdb.set_trace()
+    # raise Exception(authorization.create_token_response())
+    
+    return response
 
 
 @bp.route('/revoke', methods=['POST'])
