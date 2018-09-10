@@ -42,11 +42,7 @@ def authorize():
 
 @bp.route('/token', methods=['POST'])
 def issue_token():
-    # raise
     response = authorization.create_token_response()
-    # import pdb;pdb.set_trace()
-    # raise Exception(authorization.create_token_response())
-    
     return response
 
 

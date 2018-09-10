@@ -13,10 +13,10 @@ services:
     command: yarn start
     environment:
       NODE_ENV: development
-      REACT_APP_API_PATH: ${REACT_APP_API_PATH:-http://lvh.me:5060}
-      REACT_APP_REDIRECT_PATH: ${REACT_APP_REDIRECT_PATH:-http://lvh.me:3060/redirect}
-      REACT_APP_CPRO_PATH: ${REACT_APP_CPRO_PATH:-http://lvh.me:8080}
-      REACT_APP_CLIENT_ID: ${REACT_APP_CLIENT_ID}
+      REACT_APP_API_PATH:
+      REACT_APP_REDIRECT_PATH:
+      REACT_APP_CPRO_PATH:
+      REACT_APP_CLIENT_ID:
 
   web:
     restart: always
@@ -53,7 +53,6 @@ services:
       WAIT_BEFORE_HOSTS: 2
       FLASK_APP: "tbapi_app.py"
       FLASK_DEBUG: 1
-      FLASK_ENV: development
       AUTHLIB_INSECURE_TRANSPORT: 'true'
       MODE: 'dev'
       REACT_APP_CLIENT_PATH:
@@ -83,10 +82,10 @@ services:
         published: ${CPRO_EXTERNAL_PORT:-8080}
     environment:
       INSTANCE_ID: mpower_tb
-      CPRO_API_CLIENT_ID: ${CPRO_API_CLIENT_ID}
-      REACT_APP_API_PATH: ${REACT_APP_API_PATH:-http://lvh.me:5060}
-      REACT_APP_CPRO_PATH: ${REACT_APP_CPRO_PATH:-http://lvh.me:8080}
-      REACT_APP_CLIENT_PATH: ${REACT_APP_CLIENT_PATH:-http://lvh.me:3060}
+      CPRO_API_CLIENT_ID:
+      REACT_APP_API_PATH:
+      REACT_APP_CPRO_PATH:
+      REACT_APP_CLIENT_PATH:
       DATABASE_URL: mysql://${CPRO_DATABASE_USER:-mpower}:${CPRO_DATABASE_PASSWORD:-mpower}@mpower-db:3306/${CPRO_DATABASE_NAME:-mpower_demo}
     command: bash -c '
       env &&
