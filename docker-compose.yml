@@ -105,6 +105,7 @@ services:
     hostname: mpower-db
     volumes:
       - "./db/sql/mpower-db:/docker-entrypoint-initdb.d"
+      - "./db/my.cnf:/etc/mysql/mysql.conf.d/my.cnf"
       - type: volume
         source: mpower-db-volume
         target: /var/lib/mysql
