@@ -71,6 +71,8 @@ services:
       - web
     networks:
       - tbapi
+    environment:
+      WEB_EXTERNAL_PORT:
 
   cpro:
     restart: always
