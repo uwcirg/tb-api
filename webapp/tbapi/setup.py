@@ -13,6 +13,8 @@ setup(
         'Flask-Migrate',
         'flask-cors',
         'Authlib[crypto]==0.5.1',
+	    'flask-swagger',
+        'pathlib',
         'gunicorn'
     ],
     setup_requires=[
