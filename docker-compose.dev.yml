@@ -1,5 +1,26 @@
 version: '3.3'
+
+# This file is intended to overwrite certain settings from `docker-compose.yml`.
+# These changes make it easier to develop,
+# with a tighter feedback loop on changes
+# and some additional debugging tools installed.
+# To activate development mode as defined by this file,
+# add this line to your `.env` file:
+#
+# COMPOSE_FILE=docker-compose.yml:docker-compose.dev.yml
+
 services:
+  client:
+    # If you're working with a local copy of the `tb-mobile-app` repo,
+    # reference it with the `TB_MOBILE_CONTEXT` variable in `.env`
+    # and uncomment this section.
+    # volumes:
+    #   - ${TB_MOBILE_CONTEXT}:/usr/src
+    environment:
+      # This allows Webpack's dev server to pick up file changes in Docker.
+      # see https://github.com/facebook/create-react-app/issues/1049
+      CHOKIDAR_USEPOLLING: 'true'
+
   web:
     # command: bash -c '/wait && flask run --host 0.0.0.0 --port 5000'
     build:
