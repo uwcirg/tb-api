@@ -70,9 +70,9 @@ services:
       - "./db/sql/tbapp-db;/docker-entrypoint-initdb.d"
       - type: volume
         source: tbapp-db-volume
-        target: /var/lib/mysql
-    # ports:
-    #   - "3307:3306"
+        target: /var/lib/mysql_uniq
+    ports:
+      - "3307:3306"
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: tbapi
