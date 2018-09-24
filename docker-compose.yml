@@ -72,7 +72,7 @@ services:
     networks:
       - tbapi
     environment:
-      WEB_EXTERNAL_PORT:
+      TB_API_INTERNAL_PORT: ${TB_API_INTERNAL_PORT:-5000}
 
   cpro:
     restart: always
