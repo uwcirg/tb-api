@@ -1,6 +1,7 @@
 from flask import Flask, Blueprint, make_response, jsonify, flash, redirect, url_for, request, current_app
 from flask_swagger import swagger
-from tbapi.models.mpower import Patient, User, Note
+from tbapi.models.tbapp import Note
+from tbapi.models.mpower import Patient, User
 from pathlib import Path
 
 bp = Blueprint('static', __name__)
