@@ -22,10 +22,9 @@ services:
       CHOKIDAR_USEPOLLING: 'true'
 
   web:
-    # command: bash -c '/wait && flask run --host 0.0.0.0 --port 5000'
+    command: bash -c '/wait && flask run --host 0.0.0.0 --port 5000'
     build:
       dockerfile: Dockerfile.dev
-    command: bash -c '/wait && sleep 10d'
     volumes:
       - source: ./webapp
         target: /home/flask/app/web
