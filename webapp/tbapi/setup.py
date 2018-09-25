@@ -12,6 +12,8 @@ setup(
         'PyMySQL',
         'Flask-Migrate',
         'flask-cors',
+        'flask-swagger',
+        'pathlib',
         'Authlib[crypto]==0.5.1',
         'gunicorn',
         'json-logging-py'
