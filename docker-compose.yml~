@@ -1,25 +1,5 @@
 version: '3.3'
 services:
-  client: 
-    restart: always
-    ports:
-      - "3060:3000"
-    build:
-            # context: https://github.com/uwcirg/tb-mobile-app.git#feature/docker-compose-cpro
-        context: ${TB_MOBILE_CONTEXT:-https://github.com/uwcirg/tb-mobile-app.git}
-    # volumes:
-    #   - ".:/usr/src/app"
-    stdin_open: true
-    tty: true
-    command: yarn start
-    environment:
-      NODE_ENV: development
-      REACT_APP_API_PATH: https://tb-api.cirg.washington.edu
-      #REACT_APP_API_PATH: http://192.168.99.100:5060/
-      REACT_APP_REDIRECT_PATH: https://tb-mobile.cirg.washington.edu/redirect
-      #REACT_APP_REDIRECT_PATH: https://192.167.99.100:5060/redirect
-      REACT_APP_CHECKIN_PATH: https://mpower-dev.cirg.washington.edu/mpower_tb-ivanc/surveys/new_session?project=daily_check_in
-      REACT_APP_CLIENT_ID: skwIPnbi7N3uIvNysUbi0xfXwnWaIMR1MCJxz8rV0dGxeMJD    
   web:
     restart: always
     build:
@@ -91,8 +71,8 @@ services:
       - type: volume
         source: tbapp-db-volume
         target: /var/lib/mysql
-    # ports:
-    #   - "3307:3306"
+    ports:
+      - "3307:3306"
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: tbapi

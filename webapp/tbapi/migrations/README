@@ -1,1 +1,48 @@
 Generic single-database configuration.
+
+
+flask@0fb8e58ebc5c:~/app/web/tbapi$ flask db current
+INFO  [alembic.env] Migrating database <default>
+INFO  [alembic.env] MetaData(bind=None)
+INFO  [alembic.runtime.migration] Context impl MySQLImpl.
+INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
+a0a902e9fba9
+INFO  [alembic.env] Migrating database mpower
+INFO  [alembic.env] MetaData(bind=None)
+INFO  [alembic.runtime.migration] Context impl MySQLImpl.
+INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
+a0a902e9fba9
+flask@0fb8e58ebc5c:~/app/web/tbapi$ flask db upgrade
+INFO  [alembic.env] Migrating database <default>
+INFO  [alembic.env] MetaData(bind=None)
+INFO  [alembic.runtime.migration] Context impl MySQLImpl.
+INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
+INFO  [alembic.runtime.migration] Running upgrade a0a902e9fba9 -> 27935569a4ca, create_notes_table
+INFO  [alembic.env] Migrating database mpower
+INFO  [alembic.env] MetaData(bind=None)
+INFO  [alembic.runtime.migration] Context impl MySQLImpl.
+INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
+INFO  [alembic.runtime.migration] Running upgrade a0a902e9fba9 -> 27935569a4ca, create_notes_table
+flask@0fb8e58ebc5c:~/app/web/tbapi$ flask db current
+INFO  [alembic.env] Migrating database <default>
+INFO  [alembic.env] MetaData(bind=None)
+INFO  [alembic.runtime.migration] Context impl MySQLImpl.
+INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
+27935569a4ca (head)
+INFO  [alembic.env] Migrating database mpower
+INFO  [alembic.env] MetaData(bind=None)
+INFO  [alembic.runtime.migration] Context impl MySQLImpl.
+INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
+27935569a4ca (head)
+flask@0fb8e58ebc5c:~/app/web/tbapi$ flask db downgrade
+INFO  [alembic.env] Migrating database <default>
+INFO  [alembic.env] MetaData(bind=None)
+INFO  [alembic.runtime.migration] Context impl MySQLImpl.
+INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
+INFO  [alembic.runtime.migration] Running downgrade 27935569a4ca -> a0a902e9fba9, create_notes_table
+INFO  [alembic.env] Migrating database mpower
+INFO  [alembic.env] MetaData(bind=None)
+INFO  [alembic.runtime.migration] Context impl MySQLImpl.
+INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
+INFO  [alembic.runtime.migration] Running downgrade 27935569a4ca -> a0a902e9fba9, create_notes_table
+flask@0fb8e58ebc5c:~/app/web/tbapi$
