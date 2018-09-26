@@ -32,7 +32,7 @@ services:
       - mpower-db
       - tbapp-db
     stdin_open: true
-    command: bash -c '/wait && /usr/local/bin/gunicorn -w 2 -b :5000 tbapi_app:app'
+    command: /usr/local/bin/gunicorn -w 2 -b :5000 tbapi_app:app
     
     tty: true
     depends_on:
@@ -112,8 +112,8 @@ services:
       - type: volume
         source: mpower-db-volume
         target: /var/lib/mysql
-    ports:
-      - "3306:3306"
+    # ports:
+    #   - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_USER: ${CPRO_DATABASE_USER:-mpower}
@@ -127,7 +127,7 @@ services:
     image: mysql:5.7
     hostname: tbapp-db
     volumes:
-      - "./db/sql/tbapp-db;/docker-entrypoint-initdb.d"
+      - "./db/sql/tbapp-db:/docker-entrypoint-initdb.d"
       - type: volume
         source: tbapp-db-volume
         target: /var/lib/mysql
