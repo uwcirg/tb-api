@@ -4,8 +4,7 @@ services:
   client: 
     restart: always
     ports:
-      - target: 3000
-        published: ${TB_MOBILE_EXTERNAL_PORT:-3060}
+      - ${TB_MOBILE_EXTERNAL_PORT:-3060}:3000
     build:
       context: ${TB_MOBILE_CONTEXT:-https://github.com/uwcirg/tb-mobile-app.git}
     stdin_open: true
@@ -24,8 +23,7 @@ services:
       context: ./webapp
       dockerfile: Dockerfile
     ports:
-      - target: ${TB_API_INTERNAL_PORT:-5000}
-        published: ${WEB_EXTERNAL_PORT:-5061}
+      - ${WEB_EXTERNAL_PORT:-5061}:${TB_API_INTERNAL_PORT:-5000}
     volumes:
       - "web:/usr/src/app"
     links:
@@ -64,8 +62,7 @@ services:
     restart: always
     build: ./nginx
     ports:
-      - target: 80
-        published: ${TB_API_EXTERNAL_PORT:-5060}
+      - ${TB_API_EXTERNAL_PORT:-5060}:80
     volumes:
       - web:/www/static
     depends_on:
@@ -81,8 +78,7 @@ services:
       context: ${CPRO_CONTEXT:-https://fake-username:REPO_ACCESS_TOKEN@gitlab.cirg.washington.edu/svn/dhair2.git#feature/tb_mpower-styling}
       dockerfile: docker/Dockerfile
     ports:
-      - target: 80
-        published: ${CPRO_EXTERNAL_PORT:-8080}
+      - ${CPRO_EXTERNAL_PORT:-8080}:80
     environment:
       HTTPS: 'true'
       INSTANCE_ID: mpower_tb
@@ -108,7 +104,6 @@ services:
     hostname: mpower-db
     volumes:
       - "./db/sql/mpower-db:/docker-entrypoint-initdb.d"
-      - "./db/my.cnf:/etc/mysql/mysql.conf.d/my.cnf"
       - type: volume
         source: mpower-db-volume
         target: /var/lib/mysql
