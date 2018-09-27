@@ -22,7 +22,6 @@ def user(id):
     return jsonify(User.query.filter_by(id=id).first().serialize)
 
 @bp.route('/notes', methods=['GET'])
-@bp.route('/notes/', methods=['GET'])
 @bp.route('/notes/<int:param>', methods=['GET'])
 @bp.route('/notes/<param>', methods=['GET']) # note json
 def get(param=None):
@@ -44,7 +43,7 @@ def get(param=None):
         schema:
           id: note_args
           properties:
-            consents:
+            notes:
               type: array
               items:
                 type: object

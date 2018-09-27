@@ -15,18 +15,12 @@ class Note(SerializeMixin, db.Model):
     @classmethod
     def get_by_patient_id(cls, patient_id):
       notes = cls.query.filter_by(patient_id=patient_id).all()
-      if notes:
-        return notes
-      else: #empty
-       return notes   
+      return notes
 
     @classmethod
     def get_by_note(cls, noteList):
-        notes = Note.filter_by_fields(noteList)
-        if notes:
-            return notes
-        else: #empty
-            return notes
+      notes = Note.filter_by_fields(noteList)
+      return notes
 
     @classmethod
     def put(cls, noteList):

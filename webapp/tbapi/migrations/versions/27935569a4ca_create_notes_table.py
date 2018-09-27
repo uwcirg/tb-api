@@ -46,8 +46,3 @@ def downgrade_():
    op.drop_index(op.f('ix_notes_author_id'), table_name='notes')
    op.drop_table('notes')
 
-def upgrade_mpower():
-	pass
-
-def downgrade_mpower():
-	pass
