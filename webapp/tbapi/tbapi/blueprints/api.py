@@ -5,34 +5,28 @@ from tbapi.models.tbapp import Note
 
 bp = Blueprint('api', __name__)
 
-@bp.route('/patients')
-def patient_index():
-    return jsonify(patients=[i.serialize for i in Patienst.query.all()])
+@bp.route('/notes/<int:id>', methods=['GET']) # note id
+@bp.route('/notes/', methods=['GET']) # patient_id
+def get(id=None):
+  if (id is not None) & isinstance(id, int): # note id
+    return jsonify(notes=[i.serialize for i in Note.get_by_note(id)])
+  
+  try:
+    patient_id = int(request.args.get('patient_id'))
+  except:
+    return jsonify(notes=[i.serialize for i in Note.get_by_patient_id(0)])
+  
+  if (patient_id is not None) & isinstance(patient_id, int): # patient_id
+    return jsonify(notes=[i.serialize for i in Note.get_by_patient_id(patient_id)])
+  else: # param is none
+    return jsonify(notes=[i.serialize for i in Note.get_by_patient_id(0)])
 
-@bp.route('/patients/<int:id>')
-def patient(id):
-    return jsonify(Patient.query.filter_by(id=id).first().serialize)
-
-@bp.route('/users')
-def user_index():
-    return jsonify(users=[i.serialize for i in User.query.all()])
-
-@bp.route('/users/<int:id>')
-def user(id):
-    return jsonify(User.query.filter_by(id=id).first().serialize)
-
-@bp.route('/notes', methods=['GET'])
-@bp.route('/notes/<int:param>', methods=['GET'])
-@bp.route('/notes/<param>', methods=['GET']) # note json
-def get(param=None):
     """Access basics for patient notes
 
-    1. GET /api/notes returns all notes.
-    2. GET /api/notes/ returns all notes.
-    3. GET /api/notes/{int:patient_id} returns all notes by patient_id.
-    4. GET /api/notes/{json: note} returns the specified note.
+    1. GET /api/notes/?patient_id=int  returns all notes by specified patient_id
+    2. GET /api/notes/{int:id} returns note specified by id.
 
-    returns patient notes id, patient_id, text, author_id, created, lastmod, flagged and flag_type in JSON
+    returns patient notes id, patient_id, text, author_id, created, lastmod in JSON
     ---
     tags:
       - Note
@@ -41,7 +35,7 @@ def get(param=None):
       - in: body
         name: body
         schema:
-          id: note_args
+          id: note
           properties:
             notes:
               type: array
@@ -54,8 +48,6 @@ def get(param=None):
                   - author_id
                   - created
                   - lastmod
-                  - flagged
-                  - flag_type
                 properties:
                   id:
                     type: integer
@@ -78,12 +70,6 @@ def get(param=None):
                     type: string
                     format: date-time
                     description: lastmod
-                  flagged:
-                    type: integer
-                    description: flagged 0 or 1
-                  flag_type:
-                    type: string
-                    description: flag_type Enum 'Identifiers in note','Participant distress','Participant feedback','Provider feedback','Technical issue','Data integrity','Report to IRB'
     produces:
       - application/json
     responses:
@@ -91,23 +77,12 @@ def get(param=None):
         description:
             "Returns {notes}"
     """
-    if (param is not None) & isinstance(param, int): # patient_id
-        return jsonify(notes=[i.serialize for i in Note.get_by_patient_id(param)])
-    elif param: # note
-        return jsonify(notes=[i.serialize for i in Note.get_by_note(param)])
-    else: # param is none
-        return jsonify(notes=[i.serialize for i in Note.query.all()])
-
-@bp.route('/notes/<noteList>', methods=['POST'])
-def post(noteList):
-    return jsonify(notes=[i.serialize for i in Note.post(noteList)])
-
-@bp.route('/notes/<noteList>', methods=['PUT'])
-def put(noteList):
+    
+@bp.route('/notes', methods=['POST'])
+def post():
     """Create or update a note
 
-    1. POST /api/notes/{json: note} returns the specified note.
-    2. PUT /api/notes/{json: note} returns the specified note.
+    1. POST /api/notes returns the inserted or updated note id.
     ---
     tags:
       - Note
@@ -116,7 +91,7 @@ def put(noteList):
       - in: body
         name: body
         schema:
-          id: note_args
+          id: note
           properties:
             consents:
               type: array
@@ -147,12 +122,6 @@ def put(noteList):
                     type: string
                     format: date-time
                     description: lastmod
-                  flagged:
-                    type: integer
-                    description: flagged 0 or 1
-                  flag_type:
-                    type: string
-                    description: flag_type Enum 'Identifiers in note','Participant distress','Participant feedback','Provider feedback','Technical issue','Data integrity','Report to IRB'
     produces:
       - application/json
     responses:
@@ -160,7 +129,7 @@ def put(noteList):
         description:
             "Returns {notes}"
     """
-    return jsonify(notes=[i.serialize for i in Note.put(noteList)])
+    return jsonify(Note.post(request.get_json()))
 
 @bp.route('/spec')
 def spec():
