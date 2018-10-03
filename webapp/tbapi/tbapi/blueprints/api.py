@@ -8,18 +8,18 @@ bp = Blueprint('api', __name__)
 @bp.route('/notes/<int:id>', methods=['GET']) # note id
 @bp.route('/notes/', methods=['GET']) # patient_id
 def get(id=None):
-  if (id is not None) & isinstance(id, int): # note id
-    return jsonify(notes=[i.serialize for i in Note.get_by_note(id)])
+    if (id is not None) & isinstance(id, int): # note id
+      return jsonify(notes=[i.serialize for i in Note.get_by_note(id)])
   
   try:
-    patient_id = int(request.args.get('patient_id'))
+      patient_id = int(request.args.get('patient_id'))
   except:
-    return jsonify(notes=[i.serialize for i in Note.get_by_patient_id(0)])
+      return jsonify(notes=[i.serialize for i in Note.get_by_patient_id(0)])
   
   if (patient_id is not None) & isinstance(patient_id, int): # patient_id
-    return jsonify(notes=[i.serialize for i in Note.get_by_patient_id(patient_id)])
+      return jsonify(notes=[i.serialize for i in Note.get_by_patient_id(patient_id)])
   else: # param is none
-    return jsonify(notes=[i.serialize for i in Note.get_by_patient_id(0)])
+      return jsonify(notes=[i.serialize for i in Note.get_by_patient_id(0)])
 
     """Access basics for patient notes
 
@@ -29,53 +29,19 @@ def get(id=None):
     returns patient notes id, patient_id, text, author_id, created, lastmod in JSON
     ---
     tags:
-      - Note
+        - Note
     operationId: getNotes
     parameters:
-      - in: body
-        name: body
-        schema:
-          id: note
-          properties:
-            notes:
-              type: array
-              items:
-                type: object
-                required:
-                  - id
-                  - patient_id
-                  - text
-                  - author_id
-                  - created
-                  - lastmod
-                properties:
-                  id:
-                    type: integer
-                    format: int64
-                    description: id for note
-                  patient_id:
-                    type: integer
-                    description: patient_id
-                  text:
-                    type: string
-                    description: body of note
-                  author_id:
-                    type: integer
-                    description: author_id
-                  created:
-                    type: string
-                    format: date-time
-                    description: created
-                  lastmod:
-                    type: string
-                    format: date-time
-                    description: lastmod
+        - in: body
+          name: body
+          schema:
+              id: note
     produces:
-      - application/json
+        - application/json
     responses:
-      200:
-        description:
-            "Returns {notes}"
+        200:
+          description:
+              "Returns {notes}"
     """
     
 @bp.route('/notes', methods=['POST'])
@@ -92,36 +58,28 @@ def post():
         name: body
         schema:
           id: note
-          properties:
-            consents:
-              type: array
-              items:
-                type: object
-                required:
-                  - organization_id
-                  - agreement_url
-                properties:
+              properties:
                   id:
-                    type: integer
-                    format: int64
-                    description: id for note
+                      type: integer
+                      format: int64
+                      description: id for note
                   patient_id:
-                    type: integer
-                    description: patient_id
+                      type: integer
+                      description: patient_id
                   text:
-                    type: string
-                    description: body of note
+                      type: string
+                      description: body of note
                   author_id:
-                    type: integer
-                    description: author_id
+                      type: integer
+                      description: author_id
                   created:
-                    type: string
-                    format: date-time
-                    description: created
+                      type: string
+                      format: date-time
+                      description: created
                   lastmod:
-                    type: string
-                    format: date-time
-                    description: lastmod
+                      type: string
+                      format: date-time
+                      description: lastmod
     produces:
       - application/json
     responses:
