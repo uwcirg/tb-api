@@ -11,15 +11,15 @@ def get(id=None):
     if (id is not None) & isinstance(id, int): # note id
       return jsonify(notes=[i.serialize for i in Note.get_by_note(id)])
   
-  try:
-      patient_id = int(request.args.get('patient_id'))
-  except:
-      return jsonify(notes=[i.serialize for i in Note.get_by_patient_id(0)])
+    try:
+        patient_id = int(request.args.get('patient_id'))
+    except:
+        return jsonify(notes=[i.serialize for i in Note.get_by_patient_id(0)])
   
-  if (patient_id is not None) & isinstance(patient_id, int): # patient_id
-      return jsonify(notes=[i.serialize for i in Note.get_by_patient_id(patient_id)])
-  else: # param is none
-      return jsonify(notes=[i.serialize for i in Note.get_by_patient_id(0)])
+    if (patient_id is not None) & isinstance(patient_id, int): # patient_id
+        return jsonify(notes=[i.serialize for i in Note.get_by_patient_id(patient_id)])
+    else: # param is none
+        return jsonify(notes=[i.serialize for i in Note.get_by_patient_id(0)])
 
     """Access basics for patient notes
 

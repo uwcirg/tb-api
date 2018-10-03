@@ -10,8 +10,14 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from .base import db, SerializeMixin
 
 class Note(db.Model, SerializeMixin):
-    __bind_key__ = 'tbapi'
     __tablename__ = 'tbapi_notes'
+
+    id = Column(Integer, primary_key=True)
+    patient_id = Column(Integer, nullable=False)
+    text = Column(String(1000), nullable=False)
+    author_id = Column(Integer, nullable=False)
+    created = Column(String(100), nullable=False)
+    lastmod = Column(String(100), nullable=False)
     
     @classmethod
     def get_by_patient_id(cls, patient_id):
