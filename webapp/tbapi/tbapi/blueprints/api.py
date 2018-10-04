@@ -29,13 +29,35 @@ def get(id=None):
     returns patient notes id, patient_id, text, author_id, created, lastmod in JSON
     ---
     tags:
-        - Note
+        - Note GET
     operationId: getNotes
     parameters:
-        - in: body
-          name: body
-          schema:
-              id: note
+      - in: body
+        name: body
+        schema:
+          id: note
+          properties:
+              id:
+                  type: integer
+                  format: int64
+                  description: id for note
+              patient_id:
+                  type: integer
+                  description: patient_id
+              text:
+                  type: string
+                  description: body of note
+              author_id:
+                  type: integer
+                  description: author_id
+              created:
+                  type: string
+                  format: date-time
+                  description: created
+              lastmod:
+                  type: string
+                  format: date-time
+                  description: lastmod
     produces:
         - application/json
     responses:
@@ -51,35 +73,35 @@ def post():
     1. POST /api/notes returns the inserted or updated note id.
     ---
     tags:
-      - Note
+      - Note POST
     operationId: putNote
     parameters:
       - in: body
         name: body
         schema:
           id: note
-              properties:
-                  id:
-                      type: integer
-                      format: int64
-                      description: id for note
-                  patient_id:
-                      type: integer
-                      description: patient_id
-                  text:
-                      type: string
-                      description: body of note
-                  author_id:
-                      type: integer
-                      description: author_id
-                  created:
-                      type: string
-                      format: date-time
-                      description: created
-                  lastmod:
-                      type: string
-                      format: date-time
-                      description: lastmod
+          properties:
+              id:
+                  type: integer
+                  format: int64
+                  description: id for note
+              patient_id:
+                  type: integer
+                  description: patient_id
+              text:
+                  type: string
+                  description: body of note
+              author_id:
+                  type: integer
+                  description: author_id
+              created:
+                  type: string
+                  format: date-time
+                  description: created
+              lastmod:
+                  type: string
+                  format: date-time
+                  description: lastmod
     produces:
       - application/json
     responses:
@@ -107,7 +129,7 @@ def spec():
             "contact": {
                 "name": "name",
                 "email": "cirg@uw.edu",
-                "url": "url",
+                "url": "http://tb-mobile/api/v1.0/spec",
             },
         },
         "schemes": ("http", "https"),
