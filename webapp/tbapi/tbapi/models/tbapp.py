@@ -35,9 +35,10 @@ class Note(db.Model, SerializeMixin):
         notes = cls.query.filter_by(
             patient_id=noteObj['patient_id'], 
             text=noteObj['text'], 
-            created=noteObj['created'], 
-            author_id=noteObj['author_id'], 
-            lastmod=noteObj['lastmod']).all()
+            #created=noteObj['created'], 
+            #lastmod=noteObj['lastmod'],
+            author_id=noteObj['author_id'] 
+            ).all()
 
         if notes: # exists
             return notes[0].id    

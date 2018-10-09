@@ -32,8 +32,6 @@ def upgrade_():
     sa.Column('author_id', sa.Integer(), nullable=False),
     sa.Column('created', sa.DATETIME(), nullable=False),
     sa.Column('lastmod', sa.DATETIME(), nullable=False),
-    sa.Column('flagged', sa.SMALLINT(), nullable=False),
-    sa.Column('flag_type', sa.Enum('Identifiers in note','Participant distress','Participant feedback','Provider feedback','Technical issue','Data integrity','Report to IRB'), nullable=True),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('id'),
     )

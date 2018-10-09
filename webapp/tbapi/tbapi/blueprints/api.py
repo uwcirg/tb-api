@@ -1,4 +1,4 @@
-from flask import Flask, Blueprint, render_template, make_response, jsonify, flash, redirect, url_for, request, current_app
+from flask import Flask, Blueprint, render_template, make_response, jsonify, flash, redirect, url_for, request, current_app, abort
 from tbapi.models.mpower import Patient, User
 from flask_swagger import swagger
 from tbapi.models.tbapp import Note
@@ -6,21 +6,22 @@ from tbapi.models.tbapp import Note
 bp = Blueprint('api', __name__)
 
 @bp.route('/notes/<int:id>', methods=['GET']) # note id
+def getNote(id):
+    if id: # note id
+        return jsonify(notes=[i.serialize for i in Note.get_by_note(id)])
+    else:
+        abort(400, 'note id required')
+        
+
 @bp.route('/notes/', methods=['GET']) # patient_id
-def get(id=None):
-    if (id is not None) & isinstance(id, int): # note id
-      return jsonify(notes=[i.serialize for i in Note.get_by_note(id)])
-  
+def getPatient():
     try:
         patient_id = int(request.args.get('patient_id'))
     except:
-        return jsonify(notes=[i.serialize for i in Note.get_by_patient_id(0)])
-  
-    if (patient_id is not None) & isinstance(patient_id, int): # patient_id
-        return jsonify(notes=[i.serialize for i in Note.get_by_patient_id(patient_id)])
-    else: # param is none
-        return jsonify(notes=[i.serialize for i in Note.get_by_patient_id(0)])
-
+        abort(400, 'patient_id required')
+   
+    return jsonify(notes=[i.serialize for i in Note.get_by_patient_id(patient_id)])
+    
     """Access basics for patient notes
 
     1. GET /api/notes/?patient_id=int  returns all notes by specified patient_id
