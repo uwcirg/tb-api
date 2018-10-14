@@ -1,8 +1,8 @@
 from authlib.flask.oauth2 import AuthorizationServer, ResourceProtector
 
 from authlib.flask.oauth2.sqla import (
-    create_query_token_func,
     create_query_client_func,
+    create_save_token_func,
     create_revocation_endpoint,
     create_bearer_token_validator
 )
@@ -62,7 +62,7 @@ class AuthorizationCodeGrant(grants.AuthorizationCodeGrant):
     #     token['user_id'] = authorization_code.user_id
 
 
-class ImplicitGrant(grants.ImplicitGrant):
+#class ImplicitGrant(grants.ImplicitGrant):
 # https://github.com/lepture/authlib/blob/master/authlib/specs/rfc6749/grants/implicit.py
     # def create_access_token(self, token, client, grant_user):
     #     item = OAuth2Token(
@@ -74,7 +74,7 @@ class ImplicitGrant(grants.ImplicitGrant):
     #     db.session.commit()
 
 
-class PasswordGrant(_PasswordGrant):
+class PasswordGrant(grants.ResourceOwnerPasswordCredentialsGrant):
     def authenticate_user(self, username, password):
         user = User.query.filter_by(username=username).first()
         if user.check_password(password):
@@ -91,7 +91,7 @@ class PasswordGrant(_PasswordGrant):
     #     token['user_id'] = user.id
 
 
-class ClientCredentialsGrant(_ClientCredentialsGrant):
+class ClientCredentialsGrant(grants.ClientCredentialsGrant):
     def create_access_token(self, token, client):
         item = OAuth2Token(
             client_id=client.client_id,
@@ -102,7 +102,7 @@ class ClientCredentialsGrant(_ClientCredentialsGrant):
         db.session.commit()
 
 
-class RefreshTokenGrant(_RefreshTokenGrant):
+class RefreshTokenGrant(grants.RefreshTokenGrant):
     def authenticate_refresh_token(self, refresh_token):
         item = OAuth2Token.query.filter_by(refresh_token=refresh_token).first()
         if item and not item.is_refresh_token_expired():
@@ -110,25 +110,6 @@ class RefreshTokenGrant(_RefreshTokenGrant):
     
     def authenticate_user(self, credential):
         return User.query.get(credential.user_id)
-
-
-# class RevocationEndpoint(_RevocationEndpoint):
-#     def query_token(self, token, token_type_hint, client):
-#         q = OAuth2Token.query.filter_by(client_id=client.client_id)
-#         if token_type_hint == 'access_token':
-#             return q.filter_by(access_token=token).first()
-#         elif token_type_hint == 'refresh_token':
-#             return q.filter_by(refresh_token=token).first()
-#         # without token_type_hint
-#         item = q.filter_by(access_token=token).first()
-#         if item:
-#             return item
-#         return q.filter_by(refresh_token=token).first()
-
-#     def invalidate_token(self, token):
-#         db.session.delete(token)
-#         db.session.commit()
-
 
 query_client = create_query_client_func(db.session, OAuth2Client)
 save_token = create_save_token_func(db.session, OAuth2Token)
@@ -138,6 +119,14 @@ authorization = AuthorizationServer(
 )
 
 require_oauth = ResourceProtector()
+
+# scopes definition
+scopes = {
+    'email': 'Access to your email address.',
+    'connects': 'Access to your connected networks.'
+}
+
+
 
 def config_oauth(app):
     authorization.init_app(app)
@@ -153,11 +142,6 @@ def config_oauth(app):
     revocation_cls = create_revocation_endpoint(db.session, OAuth2Token)
     authorization.register_endpoint(revocation_cls)
 
-    # scopes definition
-    # scopes = {
-    #     'email': 'Access to your email address.',
-    #     'connects': 'Access to your connected networks.'
-    # }
 
     # protect resource
     bearer_cls = create_bearer_token_validator(db.session, OAuth2Token)

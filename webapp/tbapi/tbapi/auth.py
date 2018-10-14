@@ -1,6 +1,4 @@
 from flask import session
-from .models import User
-
 from .models.mpower import User
 
 def current_user():
@@ -9,7 +7,14 @@ def current_user():
         return User.query.get(uid)
     return None
 
+def logout():
+    del session['id']
+    return redirect('/')
 
+def login(user, permanent=True):
+    session['id'] = user.id
+    session.permanent = permanent
+    g.current_user = user
 
 
 # from functools import wraps
@@ -31,9 +36,7 @@ def current_user():
 #     return None
 
 
-# def logout():
-#     if 'sid' in session:
-#         del session['sid']
+
 
 
 # def get_current_user():

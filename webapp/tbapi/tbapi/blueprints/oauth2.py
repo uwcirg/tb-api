@@ -4,26 +4,14 @@ from authlib.specs.rfc6749 import OAuth2Error
 from ..models import OAuth2Client
 from ..auth import current_user
 from ..forms.auth import ConfirmForm, LoginConfirmForm
-from ..services.oauth2 import authorization, scopes
+from ..services.oauth2 import authorization, scopes, require_oauth
 
 
 bp = Blueprint('oauth2', __name__)
 
 
 @bp.route('/authorize', methods=['GET', 'POST'])
-def authorize():
-
-
-
-
-    try:
-        grant = authorization.validate_authorization_request()
-    except OAuth2Error as error:
-        # TODO: add an error page
-        
-        
-   
-   
+def authorize(): 
     user = current_user()
 
     if current_user:
@@ -55,14 +43,10 @@ def authorize():
         grant_user = None
 
     return authorization.create_authorization_response(grant_user=grant_user)
-   
-
-
 
 @bp.route('/token', methods=['POST'])
 def issue_token():
     return authorization.create_token_response()
-
 
 
 @bp.route('/revoke', methods=['POST'])

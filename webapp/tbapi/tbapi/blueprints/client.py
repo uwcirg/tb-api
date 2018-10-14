@@ -1,6 +1,6 @@
 from flask import Blueprint, url_for
 from flask import abort, redirect, render_template
-from ..auth import require_login, current_user
+# from ..auth import require_login, current_user
 from ..models import OAuth2Client
 from ..forms.client import (
     Client2Form, OAuth2ClientWrapper
