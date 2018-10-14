@@ -1,20 +1,17 @@
-from authlib.flask.oauth2 import (
-    AuthorizationServer,
-    ResourceProtector,
-)
+from authlib.flask.oauth2 import AuthorizationServer, ResourceProtector
+
 from authlib.flask.oauth2.sqla import (
     create_query_token_func,
     create_query_client_func,
+    create_revocation_endpoint,
+    create_bearer_token_validator
 )
-from authlib.specs.rfc6749.grants import (
-    AuthorizationCodeGrant as _AuthorizationCodeGrant,
-    ImplicitGrant as _ImplicitGrant,
-    ResourceOwnerPasswordCredentialsGrant as _PasswordGrant,
-    ClientCredentialsGrant as _ClientCredentialsGrant,
-    RefreshTokenGrant as _RefreshTokenGrant,
-)
+
+from authlib.specs.rfc6749 import grants
+
 from authlib.specs.rfc7009 import RevocationEndpoint as _RevocationEndpoint
 from werkzeug.security import gen_salt
+
 from ..models import (
     db,
     OAuth2Client,
@@ -22,8 +19,11 @@ from ..models import (
     OAuth2Token,
 )
 
+from ..models.mpower import User
 
-class AuthorizationCodeGrant(_AuthorizationCodeGrant):
+
+class AuthorizationCodeGrant(grants.AuthorizationCodeGrant):
+    # Generates Authorization Code
     def create_authorization_code(self, client, user, request):
         code = gen_salt(48)
         item = OAuth2AuthorizationCode(
@@ -37,6 +37,7 @@ class AuthorizationCodeGrant(_AuthorizationCodeGrant):
         db.session.commit()
         return code
 
+    # Parses the authorization code
     def parse_authorization_code(self, code, client):
         item = OAuth2AuthorizationCode.query.filter_by(
             code=code, client_id=client.client_id).first()
@@ -46,46 +47,48 @@ class AuthorizationCodeGrant(_AuthorizationCodeGrant):
     def delete_authorization_code(self, authorization_code):
         db.session.delete(authorization_code)
         db.session.commit()
+    
+    def authenticate_user(self, authorization_code):
+        return User.query.get(authorization_code.user_id)
+    
+    # def create_access_token(self, token, client, authorization_code):
+    #     item = OAuth2Token(
+    #         client_id=client.client_id,
+    #         user_id=authorization_code.user_id,
+    #         **token
+    #     )
+    #     db.session.add(item)
+    #     db.session.commit()
+    #     token['user_id'] = authorization_code.user_id
 
-    def create_access_token(self, token, client, authorization_code):
-        item = OAuth2Token(
-            client_id=client.client_id,
-            user_id=authorization_code.user_id,
-            **token
-        )
-        db.session.add(item)
-        db.session.commit()
-        token['user_id'] = authorization_code.user_id
 
-
-class ImplicitGrant(_ImplicitGrant):
-    def create_access_token(self, token, client, grant_user):
-        item = OAuth2Token(
-            client_id=client.client_id,
-            user_id=grant_user.id,
-            **token
-        )
-        db.session.add(item)
-        db.session.commit()
+class ImplicitGrant(grants.ImplicitGrant):
+# https://github.com/lepture/authlib/blob/master/authlib/specs/rfc6749/grants/implicit.py
+    # def create_access_token(self, token, client, grant_user):
+    #     item = OAuth2Token(
+    #         client_id=client.client_id,
+    #         user_id=grant_user.id,
+    #         **token
+    #     )
+    #     db.session.add(item)
+    #     db.session.commit()
 
 
 class PasswordGrant(_PasswordGrant):
-    from ..models.mpower import User
-
     def authenticate_user(self, username, password):
-        user = User.query.filter_by(email=username).first()
+        user = User.query.filter_by(username=username).first()
         if user.check_password(password):
             return user
 
-    def create_access_token(self, token, client, user):
-        item = OAuth2Token(
-            client_id=client.client_id,
-            user_id=user.id,
-            **token
-        )
-        db.session.add(item)
-        db.session.commit()
-        token['user_id'] = user.id
+    # def create_access_token(self, token, client, user):
+    #     item = OAuth2Token(
+    #         client_id=client.client_id,
+    #         user_id=user.id,
+    #         **token
+    #     )
+    #     db.session.add(item)
+    #     db.session.commit()
+    #     token['user_id'] = user.id
 
 
 class ClientCredentialsGrant(_ClientCredentialsGrant):
@@ -104,59 +107,61 @@ class RefreshTokenGrant(_RefreshTokenGrant):
         item = OAuth2Token.query.filter_by(refresh_token=refresh_token).first()
         if item and not item.is_refresh_token_expired():
             return item
-
-    def create_access_token(self, token, authenticated_token):
-        item = OAuth2Token(
-            client_id=authenticated_token.client_id,
-            user_id=authenticated_token.user_id,
-            **token
-        )
-        db.session.add(item)
-        db.session.delete(authenticated_token)
-        db.session.commit()
+    
+    def authenticate_user(self, credential):
+        return User.query.get(credential.user_id)
 
 
-class RevocationEndpoint(_RevocationEndpoint):
-    def query_token(self, token, token_type_hint, client):
-        q = OAuth2Token.query.filter_by(client_id=client.client_id)
-        if token_type_hint == 'access_token':
-            return q.filter_by(access_token=token).first()
-        elif token_type_hint == 'refresh_token':
-            return q.filter_by(refresh_token=token).first()
-        # without token_type_hint
-        item = q.filter_by(access_token=token).first()
-        if item:
-            return item
-        return q.filter_by(refresh_token=token).first()
+# class RevocationEndpoint(_RevocationEndpoint):
+#     def query_token(self, token, token_type_hint, client):
+#         q = OAuth2Token.query.filter_by(client_id=client.client_id)
+#         if token_type_hint == 'access_token':
+#             return q.filter_by(access_token=token).first()
+#         elif token_type_hint == 'refresh_token':
+#             return q.filter_by(refresh_token=token).first()
+#         # without token_type_hint
+#         item = q.filter_by(access_token=token).first()
+#         if item:
+#             return item
+#         return q.filter_by(refresh_token=token).first()
 
-    def invalidate_token(self, token):
-        db.session.delete(token)
-        db.session.commit()
+#     def invalidate_token(self, token):
+#         db.session.delete(token)
+#         db.session.commit()
 
 
 query_client = create_query_client_func(db.session, OAuth2Client)
-authorization = AuthorizationServer(query_client=query_client)
+save_token = create_save_token_func(db.session, OAuth2Token)
+authorization = AuthorizationServer(
+    query_client=query_client,
+    save_token=save_token,
+)
 
-# support all grants
-authorization.register_grant_endpoint(AuthorizationCodeGrant)
-authorization.register_grant_endpoint(ImplicitGrant)
-authorization.register_grant_endpoint(PasswordGrant)
-authorization.register_grant_endpoint(ClientCredentialsGrant)
-authorization.register_grant_endpoint(RefreshTokenGrant)
+require_oauth = ResourceProtector()
 
-# support revocation
-authorization.register_revoke_token_endpoint(RevocationEndpoint)
-
-# scopes definition
-scopes = {
-    'email': 'Access to your email address.',
-    'connects': 'Access to your connected networks.'
-}
-
-# protect resource
-query_token = create_query_token_func(db.session, OAuth2Token)
-require_oauth = ResourceProtector(query_token=query_token)
-
-
-def init_app(app):
+def config_oauth(app):
     authorization.init_app(app)
+
+    # support all grants
+    authorization.register_grant(grants.ImplicitGrant)
+    authorization.register_grant(grants.ClientCredentialsGrant)
+    authorization.register_grant(AuthorizationCodeGrant)
+    authorization.register_grant(PasswordGrant)
+    authorization.register_grant(RefreshTokenGrant)
+
+    # support revocation
+    revocation_cls = create_revocation_endpoint(db.session, OAuth2Token)
+    authorization.register_endpoint(revocation_cls)
+
+    # scopes definition
+    # scopes = {
+    #     'email': 'Access to your email address.',
+    #     'connects': 'Access to your connected networks.'
+    # }
+
+    # protect resource
+    bearer_cls = create_bearer_token_validator(db.session, OAuth2Token)
+    require_oauth.register_token_validator(bearer_cls())
+
+# def init_app(app):
+#     authorization.init_app(app)

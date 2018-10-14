@@ -12,7 +12,7 @@ setup(
         'PyMySQL',
         'Flask-Migrate',
         'flask-cors',
-        'Authlib[crypto]==0.5.1',
+        'Authlib>=0.10',
         'gunicorn',
         'json-logging-py'
     ],

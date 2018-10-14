@@ -48,7 +48,7 @@ def create_app(dev=False):
     migrate.init_app(app, db)
 
     #auth.init_app(app)
-    oauth2.init_app(app)
+    oauth2.config_oauth(app)
     blueprints.init_app(app)
 
     return app
