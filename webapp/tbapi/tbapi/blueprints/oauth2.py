@@ -22,6 +22,7 @@ def authorize():
 
     if request.method == 'GET':
         try:
+            t
             grant = authorization.validate_consent_request(end_user=user)
         except OAuth2Error as error:
             payload = dict(error.get_body())

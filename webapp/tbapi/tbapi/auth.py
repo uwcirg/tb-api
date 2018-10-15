@@ -1,4 +1,4 @@
-from flask import session
+from flask import session, g, redirect
 from .models.mpower import User
 
 def current_user():
@@ -8,7 +8,8 @@ def current_user():
     return None
 
 def logout():
-    del session['id']
+    if 'id' in session:
+        del session['id']
     return redirect('/')
 
 def login(user, permanent=True):

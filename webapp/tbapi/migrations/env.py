@@ -23,9 +23,9 @@ from flask import current_app
 config.set_main_option('sqlalchemy.url',
                        current_app.config.get('SQLALCHEMY_DATABASE_URI'))
 bind_names = []
-for name, url in current_app.config.get("SQLALCHEMY_BINDS").items():
-    context.config.set_section_option(name, "sqlalchemy.url", url)
-    bind_names.append(name)
+# for name, url in current_app.config.get("SQLALCHEMY_BINDS").items():
+#     context.config.set_section_option(name, "sqlalchemy.url", url)
+#     bind_names.append(name)
 target_metadata = current_app.extensions['migrate'].db.metadata
 
 

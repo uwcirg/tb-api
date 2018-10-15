@@ -10,7 +10,8 @@ bp = Blueprint('account', __name__)
 
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
-    if current_user:
+    user = current_user()
+    if user:
         return redirect(url_for('static.hello'))
     form = AuthenticateForm()
     if form.validate_on_submit():
@@ -27,7 +28,8 @@ def logout():
 
 @bp.route('/signup', methods=['GET', 'POST'])
 def signup():
-    if current_user:
+    user = current_user()
+    if user:
         return redirect(os.environ.get("REACT_APP_CLIENT_PATH"))
     form = UserCreationForm()
     if form.validate_on_submit():

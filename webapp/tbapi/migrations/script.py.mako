@@ -28,7 +28,7 @@ def downgrade(engine_name):
 
 <%
     from flask import current_app
-    db_names = [''] + list(current_app.config.get("SQLALCHEMY_BINDS").keys())
+    db_names = [''] # + list(current_app.config.get("SQLALCHEMY_BINDS").keys())
 %>
 
 ## generate an "upgrade_<xyz>() / downgrade_<xyz>()" function

@@ -11,16 +11,16 @@ class Patient(SerializeMixin, db.Model):
     __bind_key__ = 'mpower'
     __table__ = db.Model.metadata.tables['patients']
 
-# `users`.`username`,
-# `users`.`password`,
-# `users`.`first_name`,
-# `users`.`last_name`,
-# `users`.`email`,
-# `users`.`change_pw_flag`,
-# `users`.`clinic_id`,
-# `users`.`language`,
-# `users`.`last4ssn`,
-# `users`.`registered`
+# # `users`.`username`,
+# # `users`.`password`,
+# # `users`.`first_name`,
+# # `users`.`last_name`,
+# # `users`.`email`,
+# # `users`.`change_pw_flag`,
+# # `users`.`clinic_id`,
+# # `users`.`language`,
+# # `users`.`last4ssn`,
+# # `users`.`registered`
 
 class User(SerializeMixin, db.Model):
     __bind_key__ = 'mpower'
