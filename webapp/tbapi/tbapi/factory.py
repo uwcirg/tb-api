@@ -18,7 +18,7 @@ def create_app(dev=False):
         SQLALCHEMY_TRACK_MODIFICATIONS = False,
         SQLALCHEMY_POOL_RECYCLE = 60,
         SQLALCHEMY_BINDS = {
-            'mpower':        'mysql+pymysql://mpower:mpower@mpower-db:3306/mpower_demo',
+            'mpower':        'mysql+pymysql://mpower:mpower@mpower-db:3306/mpower_demo'
         }
     ))
 
@@ -39,9 +39,9 @@ def create_app(dev=False):
 
     # Reflect only the structure of the mPOWEr db.
     with app.app_context():
-        db.reflect(bind='mpower')
+        db.reflect(bind=['mpower'])
 
-    from .models import OAuth2Client, OAuth2AuthorizationCode, OAuth2Token        
+    from .models import OAuth2Client, OAuth2AuthorizationCode, OAuth2Token     
     from .services import oauth2
     from . import auth, blueprints
 
