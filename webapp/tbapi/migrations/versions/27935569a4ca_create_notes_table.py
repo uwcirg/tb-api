@@ -29,19 +29,19 @@ def upgrade_():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('patient_id', sa.Integer(), nullable=False),
     sa.Column('text', sa.String(length=10000), nullable=True),
-    sa.Column('author_id', sa.Integer(), nullable=False),
+    sa.Column('title', sa.Integer(), nullable=False),
     sa.Column('created', sa.DATETIME(), nullable=False),
     sa.Column('lastmod', sa.DATETIME(), nullable=False),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('id'),
     )
     op.create_index(op.f('ix_notes_patient_id'), 'notes', ['patient_id'], unique=False)
-    op.create_index(op.f('ix_notes_author_id'), 'notes', ['author_id'], unique=False)
+    op.create_index(op.f('ix_notes_title'), 'notes', ['title'], unique=False)
     
 
 def downgrade_():
    op.drop_index(op.f('ix_notes_patient_id'), table_name='notes')
-   op.drop_index(op.f('ix_notes_author_id'), table_name='notes')
+   op.drop_index(op.f('ix_notes_title'), table_name='notes')
    op.drop_table('notes')
 
 def upgrade_mpower():
