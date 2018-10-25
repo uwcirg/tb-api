@@ -26,22 +26,25 @@ def downgrade(engine_name):
 
 def upgrade_():
     op.create_table('notes',
-    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('id', sa.Integer(), primary_key=True, nullable=False),
     sa.Column('patient_id', sa.Integer(), nullable=False),
     sa.Column('text', sa.String(length=10000), nullable=True),
     sa.Column('title', sa.Integer(), nullable=False),
     sa.Column('created', sa.DATETIME(), nullable=False),
     sa.Column('lastmod', sa.DATETIME(), nullable=False),
     sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('id'),
     )
     op.create_index(op.f('ix_notes_patient_id'), 'notes', ['patient_id'], unique=False)
     op.create_index(op.f('ix_notes_title'), 'notes', ['title'], unique=False)
+    op.create_index(op.f('ix_notes_created'), 'notes', ['created'], unique=False)
+    op.create_index(op.f('ix_notes_lastmod'), 'notes', ['lastmod'], unique=False)
     
 
 def downgrade_():
    op.drop_index(op.f('ix_notes_patient_id'), table_name='notes')
    op.drop_index(op.f('ix_notes_title'), table_name='notes')
+   op.drop_index(op.f('ix_notes_created'), table_name='notes')
+   op.drop_index(op.f('ix_notes_lastmod'), table_name='notes')
    op.drop_table('notes')
 
 def upgrade_mpower():
