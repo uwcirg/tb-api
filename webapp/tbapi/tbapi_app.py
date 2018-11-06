@@ -20,8 +20,6 @@ def init_db():
     db = SQLAlchemy(app)
     # I don't beleive this is necessary. Tables are created using migrate (alembic)
     db.create_all()
-    
-    
 
 @app.cli.command('sync')
 def initdb_command():
@@ -80,4 +78,3 @@ def seed():
     db = SQLAlchemy(app)
     add_static_oauth2_clients(db)
     db.session.commit()
-   
