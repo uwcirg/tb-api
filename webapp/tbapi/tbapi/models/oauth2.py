@@ -11,15 +11,23 @@ from authlib.flask.oauth2.sqla import (
  
 from .base import db, SerializeMixin
 
+db.metadata.clear()
 
 class OAuth2Client(db.Model, OAuth2ClientMixin):
     __tablename__ = 'oauth2_client'
 
-    id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, nullable=False)
-    name = Column(String(48), nullable=False)
-    website = Column(Text)
-    allowed_grants = Column(Text)
+    client_id = db.Column(db.String(48), index=True, nullable=True)
+    client_secret = db.Column(db.String(120), nullable=True)
+    is_confidential = db.Column(db.Integer(), nullable=True)
+    redirect_uris = db.Column(db.Text, nullable=True)
+    default_redirect_uri = db.Column(db.Text, nullable=True)
+    allowed_scopes = db.Column(db.Text, nullable=True)
+    id = db.Column(db.Integer(), primary_key=True)
+    user_id = db.Column(db.Integer(), nullable=True)
+    name = db.Column(db.String(48), nullable=False)
+    website = db.Column(db.Text, nullable=True)
+    allowed_grants = db.Column(db.Text, nullable=True)
+    
 
     def check_response_type(self, response_type):
         grant_maps = {'code': 'authorization_code', 'token': 'implicit'}
@@ -33,6 +41,58 @@ class OAuth2Client(db.Model, OAuth2ClientMixin):
 
     def has_client_secret(self):
         return False
+
+STATIC_OAUTH2_CLIENTS = {
+    'skwIPnbi7N3uIvNysUbi0xfXwnWaIMR1MCJxz8rV0dGxeMJD':
+        {
+            'client_secret': '0',
+            'is_confidential': '0',
+            'redirect_uris': 'https://tb-mobile.cirg.washington.edu/redirect',
+            'default_redirect_uri': 'https://tb-mobile.cirg.washington.edu/redirect',
+            'allowed_scopes': 'email',
+            'id': '1',
+            'user_id': '576',
+            'name': 'tb-mobile-app',
+            'website': 'https://tb-mobile.cirg.washington.edu',
+            'allowed_grants': 'implicit',
+        },   
+    'pkwIPnbi7N3uIvNysUbi0xfXwnWaIMR1MCJxz8rV0dGxeMJD':
+        {
+            'client_secret': '0',
+            'is_confidential': '0',
+            'redirect_uris': 'https://mpower-dev.cirg.washington.edu/mpower_tb-ivanc/auth/truenth/oauth2callback',
+            'default_redirect_uri': 'https://tb-mobile.cirg.washington.edu/auth/truenth/oauth2callback',
+            'allowed_scopes': 'email',
+            'id': '2',
+            'user_id': '576',
+            'name': 'mpower-tb',
+            'website': 'https://mpower-dev.cirg.washington.edu',
+            'allowed_grants': 'authorization_code',
+
+        },
+}
+
+def add_static_oauth2_clients(db):
+    for x in STATIC_OAUTH2_CLIENTS:
+        if not OAuth2Client.query.filter_by(client_id=x).first():
+            try:
+                db.session.add(OAuth2Client(
+                    client_id=x, 
+                    client_secret=STATIC_OAUTH2_CLIENTS[x]['client_secret'],
+                    is_confidential=STATIC_OAUTH2_CLIENTS[x]['is_confidential'],
+                    redirect_uris=STATIC_OAUTH2_CLIENTS[x]['redirect_uris'],
+                    default_redirect_uri=STATIC_OAUTH2_CLIENTS[x]['default_redirect_uri'],
+                    allowed_scopes=STATIC_OAUTH2_CLIENTS[x]['allowed_scopes'],
+                    id=STATIC_OAUTH2_CLIENTS[x]['id'],
+                    user_id=STATIC_OAUTH2_CLIENTS[x]['user_id'],
+                    name=STATIC_OAUTH2_CLIENTS[x]['name'],
+                    website=STATIC_OAUTH2_CLIENTS[x]['website'],
+                    allowed_grants=STATIC_OAUTH2_CLIENTS[x]['allowed_grants'],
+                ))
+
+                
+            except Exception as e:
+                print ('except:', e)
         
 class OAuth2AuthorizationCode(db.Model, OAuth2AuthorizationCodeMixin):
     __tablename__ = 'oauth2_code'
