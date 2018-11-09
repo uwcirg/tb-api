@@ -100,6 +100,10 @@ services:
       - mpower-db
     networks:
       - tbapi
+    volumes:
+      - source: cpro-secure-data
+        target: /var/www/html/app/securedata
+        type: volume
 
   mpower-db:
     restart: always
@@ -140,6 +144,7 @@ volumes:
   web:
   mpower-db-volume:
   tbapp-db-volume:
+  cpro-secure-data:
 
 networks:
   tbapi:
