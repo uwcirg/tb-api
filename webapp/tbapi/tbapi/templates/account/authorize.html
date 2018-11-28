@@ -5,9 +5,11 @@
   <form action="" method="post" class='v-center'>
     <div style='width: 100%'>
       {{ render_form(form) }}
+
       <div role="toolbar" class="signin-toolbar btn-toolbar">
-        <button class="btn btn-block btn-primary btn-lg">Registrarse</button>
+        <button class="btn btn-secondary btn-lg col-xs-6" onClick="javascript:history.back()">Atrás</a>
+        <button class="btn col-xs-6 btn-primary btn-lg">Registrarse</button>
       </div>
     </div>
   </form>
-{% endblock %}  
+{% endblock %}

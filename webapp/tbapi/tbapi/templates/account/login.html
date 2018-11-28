@@ -4,8 +4,10 @@
 {% block form %}
   <form action="" method="post">
     {{ render_form(form) }}
-    <div role="toolbar" class="signin-toolbar btn-toolbar">
-      <button class="btn btn-primary btn-lg btn-block">Registrarse</button>
+
+    <div role="toolbar" class="signin-toolbar btn-toolbar row">
+      <button class="btn btn-secondary btn-lg col-xs-6" onClick="javascript:history.back()">Atrás</a>
+      <button class="btn btn-primary btn-lg col-xs-6">Registrarse</button>
     </div>
   </form>
 {% endblock %}
